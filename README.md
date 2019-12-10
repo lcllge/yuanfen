@@ -4,7 +4,7 @@
 一个专注拉屎的网站
 
 #### 软件架构
-springboot security
+springboot security mybatisplus ps6y ...
 
 
 #### 安装教程
