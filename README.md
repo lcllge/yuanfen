@@ -1,23 +1,23 @@
 # lanzhou-yuanfen
 
 #### 介绍
-This is SoftWare-Net for WC, for your healthy...welcome to star and fork
+一个专注拉屎的网站
 
 #### 软件架构
-软件架构说明
+springboot security
 
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  git clone
+2.  import project
+3.  run
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  版权所有, 请勿用于商业研究
+2.  账号请勿传播
+3.  支持多种打赏方式
 
 #### 参与贡献
 
