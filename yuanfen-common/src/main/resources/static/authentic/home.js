@@ -2,6 +2,7 @@ $(function () {
     loadDataAnimate();
 
     function loadDataAnimate() {
+        // TODO
         var html = '';
         for (let i = 0; i < 30; i++) {
             html += '<div class="card">' +

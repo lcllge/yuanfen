@@ -54,7 +54,7 @@ $(document).ready(function () {
         }, function (result) {
             result = JSONUtil.parseObj(result);
             if (parseInt(result.code) === 200) {
-                window.location.href = ctxPath + "home";
+                window.location.href = ctxPath + "index";
             }else{
                 layer.msg('用户登入异常, 请检查用户名或密码 !');
             }

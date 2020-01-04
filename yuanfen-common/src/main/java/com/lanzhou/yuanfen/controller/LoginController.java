@@ -61,11 +61,21 @@ public class LoginController {
      *
      * @return
      */
-    @RequestMapping({"/index", "/home", "/"})
+    @RequestMapping("/home")
     public String home() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 思路, 匿名不给进咯, 可以考虑在session 做手脚
         return "home";
+    }
+
+    /**
+     * 跳转
+     *
+     * @return
+     */
+    @RequestMapping({"/index", "/"})
+    public String index() {
+        return "index";
     }
 
     @Resource
