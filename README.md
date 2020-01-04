@@ -15,6 +15,27 @@ springboot security mybatisplus ps6y ...
 
 #### 使用说明
 
+开始使用....
+
+运行环境:
+    TODO
+
+
+构建: 
+    将本项目install成jar包, 然后放在/home/temp/
+    运行命令:
+        docker build -t yuanfen:0.0.1-SNAPSHOT .
+        
+运行:
+    运行命令:
+        docker run -p 80:8080 --name yuanfen \
+        --link mysql:tomysql \
+        -v /etc/localtime:/etc/localtime \
+        -v /home/temp/yuanfen/logs:/var/logs \
+        -d yuanfen:0.0.1-SNAPSHOT            
+
+
+
 1.  版权所有, 请勿用于商业研究
 2.  账号请勿传播
 3.  支持多种打赏方式
