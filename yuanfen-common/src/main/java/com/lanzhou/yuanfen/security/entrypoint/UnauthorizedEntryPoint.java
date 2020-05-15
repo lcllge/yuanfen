@@ -25,7 +25,7 @@ public class UnauthorizedEntryPoint implements AuthenticationEntryPoint {
 
     private boolean isAjaxRequest(HttpServletRequest request) {
         String ajaxFlag = request.getHeader("X-Requested-With");
-        return ajaxFlag != null && "XMLHttpRequest".equals(ajaxFlag);
+        return "XMLHttpRequest".equals(ajaxFlag);
     }
 
 }

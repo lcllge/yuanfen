@@ -48,6 +48,27 @@ public class User extends BaseEntity implements Serializable {
 
     private String password;
 
+    /**
+     * 腾讯OpenId, 唯一标识
+     */
+    private String openId;
+
+    /**
+     * 性别
+     */
+    private String gender;
+
+    /**
+     * 省份
+     */
+    private String province;
+
+    /**
+     * 出身年份
+     */
+    private String year;
+
+
     private LocalDateTime lastLoginTime;
 
 }

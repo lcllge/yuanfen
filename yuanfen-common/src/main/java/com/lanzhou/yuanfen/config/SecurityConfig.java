@@ -1,12 +1,14 @@
 package com.lanzhou.yuanfen.config;
 
 import com.lanzhou.yuanfen.security.filter.EmailAuthenticationProcessingFilter;
+import com.lanzhou.yuanfen.security.filter.QQAuthenticationProcessingFilter;
 import com.lanzhou.yuanfen.security.handler.MyAuthenticationFailureHandler;
 import com.lanzhou.yuanfen.security.handler.MyAuthenticationSuccessHandler;
 import com.lanzhou.yuanfen.security.handler.AuthenticationAccessDeniedHandler;
 import com.lanzhou.yuanfen.security.mgt.MyAccessDecisionManager;
 import com.lanzhou.yuanfen.security.MyFilterInvocationSecurityMetadataSource;
 import com.lanzhou.yuanfen.security.provider.EmailAuthenticationProvider;
+import com.lanzhou.yuanfen.security.provider.QQAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -20,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -68,7 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(ipAuthenticationProvider())
+        auth.authenticationProvider(emailAuthenticationProvider())
+                .authenticationProvider(qqAuthenticationProvider())
                 .userDetailsService(myUserDetailsService).passwordEncoder(myPasswordEncoder());
     }
 
@@ -91,8 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationEntryPoint emailEntryPoint() {
-        LoginUrlAuthenticationEntryPoint emailEntryPoint = new LoginUrlAuthenticationEntryPoint("/emailLogin");
-        return emailEntryPoint;
+        return new LoginUrlAuthenticationEntryPoint("/emailLogin");
     }
 
     /**
@@ -130,6 +131,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(authenticationAccessDeniedHandler);
         // 添加邮箱登入端点
         http.addFilterBefore(emailAuthenticationProcessingFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(qqAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
     }
 
 
@@ -149,14 +151,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return ipAuthenticationProcessingFilter;
     }
 
+
+    /**
+     * 自定义 QQ登录 过滤器
+     */
+    private QQAuthenticationProcessingFilter qqAuthenticationFilter(AuthenticationManager authenticationManager) {
+        QQAuthenticationProcessingFilter authenticationFilter = new QQAuthenticationProcessingFilter("/qqLogin");
+        authenticationFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        authenticationFilter.setAuthenticationSuccessHandler(myAuthenticationSuccessHandler);
+        authenticationFilter.setAuthenticationManager(authenticationManager);
+        return authenticationFilter;
+    }
+
     /**
      * email认证者配置
      *
      * @return
      */
     @Bean
-    public EmailAuthenticationProvider ipAuthenticationProvider() {
+    public EmailAuthenticationProvider emailAuthenticationProvider() {
         return new EmailAuthenticationProvider();
+    }
+
+    /**
+     * email认证者配置
+     *
+     * @return
+     */
+    @Bean
+    public QQAuthenticationProvider qqAuthenticationProvider() {
+        return new QQAuthenticationProvider();
     }
 
 
