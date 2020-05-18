@@ -144,7 +144,7 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
         user.setProvince(json.getString("province"));
         user.setYear(json.getString("year"));
         user.setAvatar(json.getString("figureurl_qq_2"));
-
+        System.out.println("QQ登入的账号信息为: " + JSONObject.toJSONString(user));
         return user;
     }
 }

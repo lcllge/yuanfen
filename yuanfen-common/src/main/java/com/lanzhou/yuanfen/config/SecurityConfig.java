@@ -157,8 +157,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     private QQAuthenticationProcessingFilter qqAuthenticationFilter(AuthenticationManager authenticationManager) {
         QQAuthenticationProcessingFilter authenticationFilter = new QQAuthenticationProcessingFilter("/qqLogin");
-        authenticationFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
-        authenticationFilter.setAuthenticationSuccessHandler(myAuthenticationSuccessHandler);
+        // 返回校验逻辑, 用于前后端分离的时候进行
+        // authenticationFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        // authenticationFilter.setAuthenticationSuccessHandler(myAuthenticationSuccessHandler);
         authenticationFilter.setAuthenticationManager(authenticationManager);
         return authenticationFilter;
     }

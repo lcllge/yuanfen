@@ -34,8 +34,10 @@ public class QQAuthenticationToken extends AbstractAuthenticationToken {
     /**
      * 未认证时候的构造器
      */
-    public QQAuthenticationToken() {
+    public QQAuthenticationToken(String accessToken, String openId) {
         super(null);
+        this.accessToken = accessToken;
+        this.openId = openId;
         super.setAuthenticated(false);
     }
 

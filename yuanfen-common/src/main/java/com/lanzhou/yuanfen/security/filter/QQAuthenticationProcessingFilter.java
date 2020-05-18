@@ -78,34 +78,33 @@ public class QQAuthenticationProcessingFilter extends AbstractAuthenticationProc
         System.out.println("Code : " + code);
         String tokenAccessApi = String.format(TOKEN_ACCESS_API, ACCESS_TOKEN_URL,
                 GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, code, REDIRECT_URI);
-        QQAuthenticationToken qqToken = this.getToken(tokenAccessApi);
+        QQToken qqToken = this.getToken(tokenAccessApi);
         System.out.println(JSON.toJSONString(qqToken));
         if (qqToken != null) {
             String openId = getOpenId(qqToken.getAccessToken());
-            qqToken.setOpenId(openId);
             System.out.println("openId=============> :" + openId);
             if (openId != null) {
                 // 返回验证结果
                 System.out.println("当前认证管理器为: " + this.getAuthenticationManager().getClass().getName());
-                return this.getAuthenticationManager().authenticate(qqToken);
+                return this.getAuthenticationManager().authenticate(new QQAuthenticationToken(qqToken.getAccessToken(), openId));
             }
         }
         return null;
     }
 
-    private QQAuthenticationToken getToken(String tokenAccessApi) throws IOException {
+    private QQToken getToken(String tokenAccessApi) throws IOException {
         Document document = Jsoup.connect(tokenAccessApi).get();
         String tokenResult = document.text();
         String[] results = tokenResult.split("&");
         if (results.length == 3) {
-            QQAuthenticationToken qqToken = new QQAuthenticationToken();
+            QQToken token = new QQToken();
             String accessToken = results[0].replace("access_token=", "");
             int expiresIn = Integer.valueOf(results[1].replace("expires_in=", ""));
             String refreshToken = results[2].replace("refresh_token=", "");
-            qqToken.setAccessToken(accessToken);
-            qqToken.setExpiresIn(expiresIn);
-            qqToken.setRefreshToken(refreshToken);
-            return qqToken;
+            token.setAccessToken(accessToken);
+            token.setExpiresIn(expiresIn);
+            token.setRefreshToken(refreshToken);
+            return token;
         }
         return null;
     }
@@ -119,6 +118,52 @@ public class QQAuthenticationProcessingFilter extends AbstractAuthenticationProc
             return matcher.group(1);
         }
         return null;
+    }
+
+
+    /**
+     * QQToken 数据
+     */
+    static class QQToken {
+
+        /**
+         * token
+         */
+        private String accessToken;
+
+        /**
+         * 有效期
+         */
+        private int expiresIn;
+
+        /**
+         * 刷新时用的 token
+         */
+        private String refreshToken;
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public void setAccessToken(String accessToken) {
+            this.accessToken = accessToken;
+        }
+
+        public int getExpiresIn() {
+            return expiresIn;
+        }
+
+        public void setExpiresIn(int expiresIn) {
+            this.expiresIn = expiresIn;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+
+        public void setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
+        }
     }
 
 }
