@@ -3,20 +3,15 @@ package com.lanzhou.yuanfen.security.provider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lanzhou.yuanfen.security.token.EmailAuthenticationToken;
 import com.lanzhou.yuanfen.security.token.QQAuthenticationToken;
-import com.lanzhou.yuanfen.sys.entity.User;
-import com.lanzhou.yuanfen.sys.entity.UserRole;
+import com.lanzhou.yuanfen.sys.entity.SocialUser;
 import com.lanzhou.yuanfen.sys.mapper.RolePermissionMapper;
-import com.lanzhou.yuanfen.sys.mapper.UserMapper;
-import com.lanzhou.yuanfen.sys.mapper.UserRoleMapper;
-import com.lanzhou.yuanfen.util.SpringContextHolder;
+import com.lanzhou.yuanfen.sys.mapper.SocialUserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,8 +19,9 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * QQ认证的处理者
@@ -50,7 +46,7 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
     /**
      * 默认授权用户角色KEY
      */
-    private static final Long DEFAULT_ROLE_KEY = 2L;
+    // private static final Long DEFAULT_ROLE_KEY = 2L;
 
     /**
      * 默认授权用户权限: code
@@ -61,9 +57,8 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
     }};
 
     @Resource
-    private UserMapper userMapper;
-    @Resource
-    private UserRoleMapper userRoleMapper;
+    private SocialUserMapper socialUserMapper;
+
     @Resource
     private RolePermissionMapper rolePermissionMapper;
 
@@ -79,14 +74,16 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
         if (qqAuth.getAccessToken() != null && qqAuth.getOpenId() != null) {
             System.out.println("登入信息用户为: " + JSONObject.toJSONString(qqAuth));
             String openId = qqAuth.getOpenId();
-            User user = userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId));
+            SocialUser user = socialUserMapper.selectOne(new QueryWrapper<SocialUser>().eq("open_id", openId));
             // 通过OpenId寻找数据库, 没有的话直接保存当前用户, 有的话用当前用户登入
             if (user != null) {
-                System.out.println("数据库查询用户为: " + JSONObject.toJSONString(user));
-                List<String> perms = rolePermissionMapper.getPermByUserKey(user.getUserKey());
-                for (String perm : perms) {
-                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority(perm);
-                    DEFAULT_GRANTED_AUTHORITY.add(authority);
+                // 数据库用户有关联Key就给对应的权限, 没有就默认吧
+                if (!StringUtils.isEmpty(user.getUserKey())) {
+                    List<String> perms = rolePermissionMapper.getPermByUserKey(user.getUserKey());
+                    for (String perm : perms) {
+                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(perm);
+                        DEFAULT_GRANTED_AUTHORITY.add(authority);
+                    }
                 }
                 System.out.println("当前登入数据库用户啦...........");
             } else {
@@ -113,21 +110,15 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
     /**
      * 添加社交用户到数据库
      *
-     * @param user
      * @param openId
      */
-    private void saveSocialUser(User user, String openId) {
+    private void saveSocialUser(SocialUser user, String openId) {
         // 添加新用户
         user.setOpenId(openId);
-        userMapper.insert(user);
-        // 添加默认角色
-        UserRole userRole = new UserRole();
-        userRole.setUserKey(user.getUserKey());
-        userRole.setRoleKey(DEFAULT_ROLE_KEY);
-        userRoleMapper.insert(userRole);
+        socialUserMapper.insert(user);
     }
 
-    private User getUserInfo(String accessToken, String openId) {
+    private SocialUser getUserInfo(String accessToken, String openId) {
         String url = String.format(USER_INFO_API, USER_INFO_URI, accessToken, CLIENT_ID, openId);
         Document document;
         try {
@@ -138,11 +129,14 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
         String resultText = document.text();
         JSONObject json = JSON.parseObject(resultText);
         System.out.println("QQ登入的远程账号信息为: " + json.toString());
-        User user = new User();
-        user.setUsername(json.getString("nickname"));
+        SocialUser user = new SocialUser();
+        user.setNickname(json.getString("nickname"));
         user.setGender(json.getString("gender"));
         user.setProvince(json.getString("province"));
+        user.setCity(json.getString("city"));
         user.setYear(json.getString("year"));
+        user.setLevel(json.getInteger("level"));
+        user.setVip(json.getString("vip").equals("1"));
         user.setAvatar(json.getString("figureurl_qq_2"));
         System.out.println("QQ登入的账号信息为: " + JSONObject.toJSONString(user));
         return user;

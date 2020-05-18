@@ -36,15 +36,16 @@
     <link rel="stylesheet" th:href="@{/bootstrap/font-awesome/css/font-awesome.min.css}">
 
     <style>
-        .qq_login {
+        .social_login {
             width: 30px;
             height: 30px;
             display: block;
             float: right;
             text-align: center;
+            margin: 0 3px;
         }
 
-        .qq_login:hover a .fa {
+        .social_login:hover a .fa {
             color: #1E9FFF;
         }
     </style>
@@ -110,10 +111,20 @@
                         <p>
                             还没账号 ?
                             <a style="color: #5a84fd;" th:href="@{/register}">注册</a>
-                            <span class="qq_login" title="QQ登入">
+                            <span class="social_login" title="微博登入">
                                 <a style="font-size: 22px;"
-                                   href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101848364&redirect_uri=http://yuangfeng.top/qqLogin"><i
-                                        class="fa fa-qq" aria-hidden="true"></i>
+                                   href="javascript:void(0);">
+                                        <i class="fa fa-weibo" aria-hidden="true"></i>
+                                </a></span>
+                            <span class="social_login" title="微信登入">
+                                <a style="font-size: 22px;"
+                                   href="javascript:void(0);">
+                                        <i class="fa fa-weixin" aria-hidden="true"></i></i>
+                                </a></span>
+                            <span class="social_login" title="QQ登入">
+                                <a style="font-size: 22px;"
+                                   href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101848364&redirect_uri=http://yuangfeng.top/qqLogin">
+                                    <i class="fa fa-qq" aria-hidden="true"></i>
                                 </a></span>
 
                         </p>

@@ -1,21 +1,19 @@
 package com.lanzhou.yuanfen.sys.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.util.List;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.lanzhou.yuanfen.config.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author lcllge
@@ -49,11 +47,6 @@ public class User extends BaseEntity implements Serializable {
     private String password;
 
     /**
-     * 腾讯OpenId, 唯一标识
-     */
-    private String openId;
-
-    /**
      * 性别
      */
     private String gender;
@@ -64,9 +57,14 @@ public class User extends BaseEntity implements Serializable {
     private String province;
 
     /**
+     * 省份
+     */
+    private String city;
+
+    /**
      * 出身年份
      */
-    private String year;
+    private LocalDateTime birthDate;
 
 
     private LocalDateTime lastLoginTime;

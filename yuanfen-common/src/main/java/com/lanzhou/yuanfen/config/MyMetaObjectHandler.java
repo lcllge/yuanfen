@@ -3,7 +3,6 @@ package com.lanzhou.yuanfen.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.lanzhou.yuanfen.sys.entity.User;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -25,16 +24,6 @@ import java.time.LocalDateTime;
  * @author jun-wqh
  * @date 2018/12/1
  */
-
-/**
- * @version V1.0.0
- * @ClassName: StoreController
- * @Description: 店铺
- * @author: 厦门智强软件科技
- * @date: 2019/11/8
- * @Copyright:2019 All rights reserved.
- * 注意：本内容仅限于厦门智强软件科技有限公司内部传阅，禁止外泄以及用于其他的商业目
- */
 @Configuration
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
@@ -42,16 +31,15 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         try {
             User user = (User) SecurityContextHolder.getContext().getAuthentication();
-            setFieldValByName("createUid", user.getUserKey(), metaObject);
+            setFieldValByName("createBy", user.getUserKey(), metaObject);
         } catch (Exception e) {
-            setFieldValByName("createBy", "unknown", metaObject);
+            setFieldValByName("createBy", 0L, metaObject);
             System.out.println("无法获取用户， 添加或更新时此警告可以忽略 ！");
         } finally {
             setFieldValByName("createTime", LocalDateTime.now(), metaObject);
             setFieldValByName("isDel", false, metaObject);
             setFieldValByName("isJob", false, metaObject);
             setFieldValByName("disable", false, metaObject);
-            setFieldValByName("createDate", LocalDateTime.now(), metaObject);
             setFieldValByName("isDefault", 0, metaObject);
             setFieldValByName("enable", 1, metaObject);
         }
@@ -65,6 +53,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
                 setFieldValByName("updateBy", user.getUserKey(), metaObject);
             }
         } catch (Exception e) {
+            setFieldValByName("updateBy", 0L, metaObject);
             System.out.println("无法获取用户， 添加或更新时此警告可以忽略 ！");
         } finally {
             setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
