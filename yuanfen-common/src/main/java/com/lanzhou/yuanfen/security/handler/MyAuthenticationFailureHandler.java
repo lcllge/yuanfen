@@ -2,6 +2,7 @@ package com.lanzhou.yuanfen.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.lanzhou.yuanfen.response.ServerResponseResult;
+import com.lanzhou.yuanfen.security.token.QQAuthenticationToken;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;

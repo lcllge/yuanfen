@@ -21,6 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -158,8 +160,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private QQAuthenticationProcessingFilter qqAuthenticationFilter(AuthenticationManager authenticationManager) {
         QQAuthenticationProcessingFilter authenticationFilter = new QQAuthenticationProcessingFilter("/qqLogin");
         // 返回校验逻辑, 用于前后端分离的时候进行
-        // authenticationFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
-        // authenticationFilter.setAuthenticationSuccessHandler(myAuthenticationSuccessHandler);
+        authenticationFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        authenticationFilter.setAuthenticationSuccessHandler(myAuthenticationSuccessHandler);
         authenticationFilter.setAuthenticationManager(authenticationManager);
         return authenticationFilter;
     }

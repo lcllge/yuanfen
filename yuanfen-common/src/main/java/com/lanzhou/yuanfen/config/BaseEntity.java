@@ -2,6 +2,9 @@ package com.lanzhou.yuanfen.config;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,6 +13,9 @@ import java.time.LocalDateTime;
  * BaseEntity
  * @author Administrator
  */
+@Setter
+@Getter
+@ToString
 public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -16,7 +16,7 @@
     <link rel="shortcut icon" type="image/icon" th:href="@{/bootstrap/logo/favicon.png}"/>
 
     <!--font-awesome.min.css-->
-    <link rel="stylesheet" th:href="@{/bootstrap/css/font-awesome.min.css}" type="text/css" />
+    <link rel="stylesheet" th:href="@{/bootstrap/css/font-awesome.min.css}" type="text/css"/>
 
     <!--animate.css-->
     <link rel="stylesheet" th:href="@{/bootstrap/css/animate.css}">
@@ -32,6 +32,22 @@
 
     <!--responsive.css-->
     <link rel="stylesheet" th:href="@{/bootstrap/css/responsive.css}">
+
+    <link rel="stylesheet" th:href="@{/bootstrap/font-awesome/css/font-awesome.min.css}">
+
+    <style>
+        .qq_login {
+            width: 30px;
+            height: 30px;
+            display: block;
+            float: right;
+            text-align: center;
+        }
+
+        .qq_login:hover a .fa {
+            color: #1E9FFF;
+        }
+    </style>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -58,7 +74,8 @@
                             </div><!--/.form-group -->
                             <div class="form-group">
                                 <label for="signin_form2">密码</label>
-                                <input name="password" type="password" class="form-control" id="signin_form2" placeholder="请输入您的密码">
+                                <input name="password" type="password" class="form-control" id="signin_form2"
+                                       placeholder="请输入您的密码">
                             </div><!--/.form-group -->
                         </form><!--/form -->
                     </div><!--/.signin-form -->
@@ -93,7 +110,12 @@
                         <p>
                             还没账号 ?
                             <a style="color: #5a84fd;" th:href="@{/register}">注册</a>
-                            <a href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101848364&redirect_uri=http://yuangfeng.top/qqLogin" class="btn btn-primary btn-block">QQ登录</a>
+                            <span class="qq_login" title="QQ登入">
+                                <a style="font-size: 22px;"
+                                   href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101848364&redirect_uri=http://yuangfeng.top/qqLogin"><i
+                                        class="fa fa-qq" aria-hidden="true"></i>
+                                </a></span>
+
                         </p>
                     </div><!--/.signin-footer -->
                 </div><!--/.col-->

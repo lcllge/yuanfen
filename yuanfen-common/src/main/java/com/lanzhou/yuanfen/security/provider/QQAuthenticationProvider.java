@@ -90,7 +90,7 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
                 }
                 System.out.println("当前登入数据库用户啦...........");
             } else {
-                user = getUserInfo(qqAuth.getName(), openId);
+                user = getUserInfo(qqAuth.getAccessToken(), openId);
                 // 添加用户到数据库
                 saveSocialUser(user, openId);
                 System.out.println("当前QQ用户已经登入啦, 哈哈哈哈, 骚等哦!!");
@@ -137,7 +137,7 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
         }
         String resultText = document.text();
         JSONObject json = JSON.parseObject(resultText);
-
+        System.out.println("QQ登入的远程账号信息为: " + json.toString());
         User user = new User();
         user.setUsername(json.getString("nickname"));
         user.setGender(json.getString("gender"));

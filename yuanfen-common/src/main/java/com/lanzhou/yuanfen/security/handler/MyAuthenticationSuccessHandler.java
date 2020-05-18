@@ -2,6 +2,7 @@ package com.lanzhou.yuanfen.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.lanzhou.yuanfen.response.ServerResponseResult;
+import com.lanzhou.yuanfen.security.token.QQAuthenticationToken;
 import lombok.extern.java.Log;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -23,8 +24,12 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("登录成功");
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(ServerResponseResult.success()));
+        if (authentication instanceof QQAuthenticationToken) {
+            request.getRequestDispatcher("/index").forward(request, response);
+        } else {
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write(JSON.toJSONString(ServerResponseResult.success()));
+        }
     }
 
 }
