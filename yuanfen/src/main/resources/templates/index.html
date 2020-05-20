@@ -1,0 +1,416 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>我的空间</title>
+    <script type="text/javascript" th:src="@{/bootstrap/js/jquery.js}"></script>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/index-bg.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/index-left.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/font-awesome/css/font-awesome.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/index/iconfont.css}" type="text/css"/>
+    <style>
+        #container .content_right .right_item {
+            padding: 0 40px;
+        }
+
+        #container .content_right .item_nav {
+            width: calc(100% - 80px);
+        }
+
+        #container .content_right .item_nav .nav_ul {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li {
+            list-style: none;
+            float: left;
+            padding: 0 20px;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 2;
+            position: relative;
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li:not(.write_diary) a:hover::before {
+            visibility: visible;
+            -webkit-transform: scaleX(1);
+            -moz-transform: scaleX(1);
+            -ms-transform: scaleX(1);
+            -o-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li a:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #000;
+            visibility: hidden;
+            -webkit-transform: scaleX(0);
+            -moz-transform: scaleX(0);
+            -ms-transform: scaleX(0);
+            -o-transform: scaleX(0);
+            transform: scaleX(0);
+            transition-duration: .2s;
+            transition-timing-function: ease-in-out;
+            transition-delay: 0s;
+        }
+
+        #container .content_right .item_nav .nav_ul .write_diary {
+            padding: 0 20px;
+            border-radius: 20px;
+            background-image: linear-gradient(to right, #33e4d5 0%, #a183e8 75%);
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li.manage a {
+            color: #3db922;
+        }
+
+        #container .content_right .item_nav .nav_ul .switch_theme {
+            background-clip: border-box;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            text-shadow: 0 0 2px #ffd800;
+            background-image: linear-gradient(90deg, #ffd800 0%, #ff512f 100%, #fff);
+            animation: glow-animation 2s infinite linear;
+            box-sizing: border-box;
+            vertical-align: inherit;
+        }
+
+        @keyframes glow-animation {
+            0% {
+                filter: hue-rotate(-360deg)
+            }
+            50% {
+                filter: hue-rotate(0deg)
+            }
+            100% {
+                filter: hue-rotate(360deg)
+            }
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li.write_diary a {
+            color: #FFF;
+        }
+
+        /*.scale-spring {
+            !* 安排下面的动画 尤其是 infinite 才会一直动 *!
+            animation: switch-theme infinite;
+            animation-duration: 1s;
+            !* Safari and Chrome *!
+            -webkit-animation: switch-theme infinite;
+            -webkit-animation-duration: 1s;
+        }
+
+        !**心跳**!
+        @-webkit-keyframes switch-theme {
+            0% {
+                background: linear-gradient(to right, red, blue);
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            40% {
+                background: linear-gradient(to right, red, blue);
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            80% {
+                background: linear-gradient(to right, red, blue);
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            100% {
+                background: linear-gradient(to right, red, blue);
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+        }*/
+
+        #container .content_right .item_nav .nav_ul .nav_li a {
+            display: block;
+            color: #555;
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li a .vip_icon {
+            color: red;
+        }
+
+        #container .content_right .item_nav .nav_ul .nav_li a .vip {
+            background: linear-gradient(to right, red, blue);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        #container .content_right .right_item.item_content .diary {
+            margin: 30px 0;
+            padding: 25px;
+            -webkit-box-shadow: 0 0 5px rgba(202, 203, 203, .5);
+            -moz-box-shadow: 0 0 5px rgba(202, 203, 204, .5);
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_title {
+            text-align: center;
+            word-break: break-word;
+            font-weight: 400;
+            font-size: 22px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_title .title{
+            position: relative;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_title .title:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #000;
+            visibility: hidden;
+            -webkit-transform: scaleX(0);
+            -moz-transform: scaleX(0);
+            -ms-transform: scaleX(0);
+            -o-transform: scaleX(0);
+            transform: scaleX(0);
+            transition-duration: .2s;
+            transition-timing-function: ease-in-out;
+            transition-delay: 0s;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_title .title:hover::before {
+            visibility: visible;
+            -webkit-transform: scaleX(1);
+            -moz-transform: scaleX(1);
+            -ms-transform: scaleX(1);
+            -o-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_title .title {
+            display: inline-block;
+            position: relative;
+            color: #555;
+            border-bottom: none;
+            vertical-align: top;
+            line-height: 1.2;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_date_view {
+            margin: 3px 0 60px;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_date_view .date_view:first-child {
+            border-left: none;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_date_view .date_view {
+            padding: 0 10px;
+            border-left: 1px solid #999;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_more_btn {
+            background: 0 0;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_more_btn .show_more {
+            display: inline-block;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #555;
+            background: #fff;
+            border: 2px solid #555;
+            border-radius: 2px;
+            transition-property: background-color;
+            line-height: 2;
+            cursor: pointer;
+            transition-duration: .2s;
+            transition-timing-function: ease-in-out;
+            transition-delay: 0s;
+        }
+
+        #container .content_right .right_item.item_content .diary .diary_item.item_more_btn .show_more:hover {
+            border-color: #222;
+            color: #fff;
+            background: #222;
+        }
+
+    </style>
+</head>
+<body>
+<div id="container">
+    <div class="content_left">
+        <!--log and nav area-->
+        <div class="left_item log_nav">
+            <div class="item_log">
+                <div class="log_name">少年派の兰州</div>
+                <div class="log_desc">想起我拖拉机的烟尘喷了那对狗男女一脸, 我很解气</div>
+            </div>
+            <div class="item_nav">
+                <ul class="item_ul">
+                    <li class="item_li active"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-fw fa-home"></i>首页</a></li>
+                    <li class="item_li"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-fw fa-user"></i>关于</a>
+                    </li>
+                    <li class="item_li"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-fw fa-tags"></i>标签</a>
+                    </li>
+                    <li class="item_li"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-fw fa-th"></i>分页</a></li>
+                    <li class="item_li"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-fw fa-archive"></i>归档</a>
+                    </li>
+                    <li class="item_li"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-fw fa-calendar"></i>日程表</a></li>
+                    <li class="item_li"><a href="javascript:void(0);">
+                        <i class="menu-item-icon fa fa-search fa-fw"></i>搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--personal and friendship area-->
+        <div class="left_item personal_friendship">
+            <div class="item_personal">
+                <!--avatar area-->
+                <div class="per_avatar">
+                    <img class="avatar" alt="兰州"
+                         src="http://thirdqq.qlogo.cn/g?b=oidb&k=Pf4r0mHoCWm66OovCfEJnQ&s=100&t=1531640597"/>
+                </div>
+                <!--show username-->
+                <div class="per_username">
+                    <span class="username">兰州</span>
+                </div>
+                <!--user description-->
+                <div class="per_depict">那一年, 东莞记录了我的爱情</div>
+                <!--content sort and grop-->
+                <div class="per_group">
+                    <div class="group_item">
+                        <a href="javascript:void(0);">
+                            <span class="item_count">8</span>
+                            <span class="group_name">日志</span>
+                        </a>
+                    </div>
+                    <div class="group_item">
+                        <a href="javascript:void(0);">
+                            <span class="item_count">8</span>
+                            <span class="group_name">标签</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="item_friendship">
+                <div class="fs_item fs_rss">
+                    <span><a href="javascript:void(0);"><i class="fa fa-rss"></i> RSS</a></span>
+                </div>
+                <div class="fs_item fs_contact">
+                    <span class="contact">
+                        <a href="javascript:void(0);"><i class="fa fa-fw fa-github"></i> Github</a>
+                    </span>
+                    <span class="contact">
+                        <a href="javascript:void(0);"><i class="fa fa-fw fa-envelope"></i> Email</a>
+                    </span>
+                </div>
+                <div class="fs_item fs_content">
+                    <span class="content_title">
+                        <a><i class="fa fa-fw fa-link"></i> 友情链接</a>
+                    </span>
+                    <span class="content_list">
+                        <ul class="fs_ul">
+                            <li class="fs_li"><a href="javascript:void(0);">友情姐额吉</a></li>
+                            <li class="fs_li"><a href="javascript:void(0);">友接姐吉</a></li>
+                            <li class="fs_li"><a href="javascript:void(0);">友情链接姐额吉</a></li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content_right">
+        <div class="right_item item_nav">
+            <ul class="nav_ul">
+                <li class="nav_li"><a href="javascript:void(0);">
+                    <i class="fa fa-diamond vip_icon" aria-hidden="true"></i>
+                    <span class="vip"> 会员</span></a>
+                </li>
+                <li class="nav_li switch_theme"><a href="javascript:void(0);">
+                    <span class="iconfont">&#xe627;</span> 切换主题</a>
+                </li>
+                <li class="nav_li manage"><a href="javascript:void(0);">
+                    <span class="iconfont">&#xe616;</span> 日记管理</a>
+                </li>
+                <li class="nav_li write_diary">
+                    <a href="javascript:void(0);"><span class="iconfont">&#xe6f7;</span> 写日记</a>
+                </li>
+            </ul>
+        </div>
+        <div class="right_item item_content">
+            <!--diary list-->
+            <div class="diary">
+                <div class="diary_item item_title">
+                    <span class="title" href="javascript:void(0);">写在第一篇</span>
+                </div>
+                <div class="diary_item item_date_view">
+                    <span class="date_view">
+                        <i class="fa fa-calendar-o"></i>
+                        <span class="view_title">发表于:</span>
+                        <span class="c_date">2020-05-20</span>
+                    </span>
+                    <span class="date_view">
+                        <i class="fa fa-calendar-check-o"></i>
+                        <span class="view_title">更新于:</span>
+                        <span class="u_date">2020-05-20</span>
+                    </span>
+                    <span class="date_view">
+                        <i class="fa fa-eye"></i>
+                        <span class="view_title">阅读次数:</span>
+                        <span class="v_count">50</span>
+                    </span>
+                </div>
+                <div class="diary_item item_more_btn">
+                    <span class="show_more">查看更多 »</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="stars"></div>
+<script>
+    $(document).ready(function () {
+        var stars = 1000;
+        var $stars = $(".stars");
+        var r = 800;
+        for (var i = 0; i < stars; i++) {
+            var $star = $("<div/>").addClass("star");
+            $stars.append($star);
+        }
+        $(".star").each(function () {
+            var cur = $(this);
+            var s = 0.2 + (Math.random() * 1);
+            var curR = r + (Math.random() * 300);
+            cur.css({
+                transformOrigin: "0 0 " + curR + "px",
+                transform: " translate3d(0,0,-" + curR + "px) rotateY(" + (Math.random() * 360) + "deg) rotateX(" + (Math.random() * -50) + "deg) scale(" + s + "," + s + ")"
+            })
+        })
+    })
+</script>
+</body>
+</html>

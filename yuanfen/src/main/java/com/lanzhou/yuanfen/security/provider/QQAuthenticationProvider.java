@@ -53,7 +53,8 @@ public class QQAuthenticationProvider implements AuthenticationProvider {
      */
     private static final Set<SimpleGrantedAuthority> DEFAULT_GRANTED_AUTHORITY = new HashSet<SimpleGrantedAuthority>() {{
         // 可以添加默认权限
-        add(new SimpleGrantedAuthority("authority"));
+        add(new SimpleGrantedAuthority("baseIndex"));
+        add(new SimpleGrantedAuthority("base"));
     }};
 
     @Resource
