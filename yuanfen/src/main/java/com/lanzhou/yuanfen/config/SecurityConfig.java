@@ -1,12 +1,12 @@
 package com.lanzhou.yuanfen.config;
 
+import com.lanzhou.yuanfen.security.MyFilterInvocationSecurityMetadataSource;
 import com.lanzhou.yuanfen.security.filter.EmailAuthenticationProcessingFilter;
 import com.lanzhou.yuanfen.security.filter.QQAuthenticationProcessingFilter;
+import com.lanzhou.yuanfen.security.handler.AuthenticationAccessDeniedHandler;
 import com.lanzhou.yuanfen.security.handler.MyAuthenticationFailureHandler;
 import com.lanzhou.yuanfen.security.handler.MyAuthenticationSuccessHandler;
-import com.lanzhou.yuanfen.security.handler.AuthenticationAccessDeniedHandler;
 import com.lanzhou.yuanfen.security.mgt.MyAccessDecisionManager;
-import com.lanzhou.yuanfen.security.MyFilterInvocationSecurityMetadataSource;
 import com.lanzhou.yuanfen.security.provider.EmailAuthenticationProvider;
 import com.lanzhou.yuanfen.security.provider.QQAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -79,6 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         String[] ignoreMatchers = new String[]{
+                "/favicon.ico",
                 "/loginPage",
                 "/register",
                 "/emailLogin",
@@ -87,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/sendSms",
                 "/bootstrap/**",
                 "/layer/**",
+                "/error/**",
                 "/fragments/**"
         };
         web.ignoring().antMatchers(ignoreMatchers);
@@ -131,7 +131,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 .exceptionHandling()
                 .accessDeniedHandler(authenticationAccessDeniedHandler);
-        // 添加邮箱登入端点
+        http.headers().frameOptions().sameOrigin();
+        // 添加其他登入登入端点
         http.addFilterBefore(emailAuthenticationProcessingFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(qqAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
     }

@@ -98,7 +98,7 @@ $(document).ready(function () {
         }, function (result) {
             result = JSONUtil.parseObj(result);
             if (parseInt(result.code) === 200) {
-                window.location.href = ctxPath + "home";
+                window.location.href = ctxPath + "index";
             } else {
                 WarnAlert(result.message);
             }

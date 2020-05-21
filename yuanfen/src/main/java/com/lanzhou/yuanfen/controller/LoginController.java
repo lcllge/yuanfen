@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -65,7 +66,7 @@ public class LoginController {
     public String home() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 思路, 匿名不给进咯, 可以考虑在session 做手脚
-        return "home";
+        return "index";
     }
 
     /**
@@ -76,6 +77,16 @@ public class LoginController {
     @RequestMapping({"/index", "/"})
     public String index() {
         return "index";
+    }
+
+    /**
+     * Index跳转
+     *
+     * @return
+     */
+    @RequestMapping("/index/{path}")
+    public String indexPath(@PathVariable String path) {
+        return "index/".concat(path);
     }
 
     @Resource

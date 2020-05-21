@@ -32,8 +32,8 @@ $(document).ready(function () {
     $("#sign").on('click', function () {
         $("input").css({"border": "1px solid #474d5b", "box-shadow": "none"});
         var $username = $("input[name='username']"), $password = $("input[name='password']");
-        var username = $username.val(),password = $password.val();
-        if(!username){
+        var username = $username.val(), password = $password.val();
+        if (!username) {
             WarnAlert("请输入用户名 !");
             $username.css({
                 "border": "1px solid #f70404",
@@ -41,7 +41,7 @@ $(document).ready(function () {
             });
             return false;
         }
-        if(!password){
+        if (!password) {
             WarnAlert("请输入密码 !");
             $password.css({
                 "border": "1px solid #f70404",
@@ -55,7 +55,7 @@ $(document).ready(function () {
             result = JSONUtil.parseObj(result);
             if (parseInt(result.code) === 200) {
                 window.location.href = ctxPath + "index";
-            }else{
+            } else {
                 layer.msg('用户登入异常, 请检查用户名或密码 !');
             }
         });
