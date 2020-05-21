@@ -48,7 +48,7 @@ public class ServerResponseResult<T> implements Serializable {
     }
 
     public static <T> ServerResponseResult success(T data) {
-        return new ServerResponseResult(ServerResponseEnum.SUCCESS.getCode(), data);
+        return new ServerResponseResult<>(ServerResponseEnum.SUCCESS.getCode(), data);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ServerResponseResult<T> implements Serializable {
     }
 
     public static <T> ServerResponseResult fail(T data) {
-        return new ServerResponseResult(ServerResponseEnum.FAIL.getCode(), data);
+        return new ServerResponseResult<>(ServerResponseEnum.FAIL.getCode(), data);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ServerResponseResult<T> implements Serializable {
     }
 
     public static <T> ServerResponseResult notFound(T data) {
-        return new ServerResponseResult(ServerResponseEnum.NOTFOUND.getCode(), data);
+        return new ServerResponseResult<>(ServerResponseEnum.NOTFOUND.getCode(), data);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ServerResponseResult<T> implements Serializable {
     }
 
     public static <T> ServerResponseResult error(T data) {
-        return new ServerResponseResult(ServerResponseEnum.ERROR.getCode(), data);
+        return new ServerResponseResult<>(ServerResponseEnum.ERROR.getCode(), data);
     }
 
     /**
