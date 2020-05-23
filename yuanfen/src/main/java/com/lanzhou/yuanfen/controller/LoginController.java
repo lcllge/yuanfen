@@ -23,6 +23,8 @@ import javax.annotation.Resource;
 @Controller
 public class LoginController {
 
+    @Resource
+    private IUserService userService;
 
     /**
      * 跳转
@@ -75,8 +77,15 @@ public class LoginController {
     @PostMapping("/getToken")
     public ServerResponseResult getToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // 思路, 匿名不给进咯, 可以考虑在session 做手脚
-        return ServerResponseResult.success(authentication);
+        String username = authentication.getName();
+        User token = userService.getOne(new QueryWrapper<User>().eq("username", username));
+        // 擦除关键信息
+        token.setPassword(null);
+        token.setBirthDate(null);
+        token.setMobile(null);
+        token.setEmail(null);
+        token.setLastLoginTime(null);
+        return ServerResponseResult.success(token);
     }
 
 
@@ -100,8 +109,10 @@ public class LoginController {
         return "index/".concat(path);
     }
 
-    @Resource
-    private IUserService userService;
+    @RequestMapping("/menu/{path}")
+    public String menuPath(@PathVariable String path) {
+        return "menu/".concat(path);
+    }
 
     @Resource
     private PasswordEncoder passwordEncoder;

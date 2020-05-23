@@ -10,10 +10,45 @@ Target Server Type    : MYSQL
 Target Server Version : 80013
 File Encoding         : 65001
 
-Date: 2020-05-21 18:15:46
+Date: 2020-05-23 16:14:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for article
+-- ----------------------------
+DROP TABLE IF EXISTS `article`;
+CREATE TABLE `article` (
+  `article_key` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内容',
+  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标签',
+  `sort_key` bigint(20) DEFAULT NULL COMMENT '分类Id',
+  `publicity` tinyint(1) DEFAULT '0' COMMENT '是否公开, 0: 不公开 1: 公开',
+  `create_by` bigint(20) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` bigint(20) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`article_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of article
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for article_sort
+-- ----------------------------
+DROP TABLE IF EXISTS `article_sort`;
+CREATE TABLE `article_sort` (
+  `article_key` tinyint(20) DEFAULT NULL,
+  `sort_key` tinyint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of article_sort
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for clientdetails
@@ -255,6 +290,25 @@ CREATE TABLE `social_login` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for sort
+-- ----------------------------
+DROP TABLE IF EXISTS `sort`;
+CREATE TABLE `sort` (
+  `sort_key` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '分类名称',
+  `describe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
+  `create_by` bigint(20) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `update_by` bigint(20) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`sort_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of sort
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -268,10 +322,10 @@ CREATE TABLE `user` (
   `update_time` datetime DEFAULT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `gender` varchar(2) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `province` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gender` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `province` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `eml_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮箱验证码',
-  `city` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `city` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `birth_date` datetime DEFAULT NULL,
   `sms_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_by` bigint(20) DEFAULT NULL,

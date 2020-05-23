@@ -106,14 +106,14 @@
     <div class="content_right">
         <div class="right_item item_nav">
             <ul class="nav_ul">
-                <li class="nav_li"><a href="javascript:void(0);">
+                <li class="nav_li vip"><a href="javascript:void(0);">
                     <i class="fa fa-diamond vip_icon" aria-hidden="true"></i>
                     <span class="vip"> 会员</span></a>
                 </li>
                 <li class="nav_li switch_theme"><a href="javascript:void(0);">
                     <span class="iconfont">&#xe627;</span> 切换主题</a>
                 </li>
-                <li class="nav_li manage"><a href="javascript:void(0);">
+                <li class="nav_li manage_diary"><a href="javascript:void(0);">
                     <span class="iconfont">&#xe616;</span> 日记管理</a>
                 </li>
                 <li class="nav_li write_diary">
@@ -132,9 +132,33 @@
     var TOKEN = {};
 
     $(document).ready(function () {
+        // 加载背景
         loadBackgroud();
+        // 加载用户身份信息
         loadCurToken();
+        // 加载用户其他信息
+        setCurUserInfo()
     });
+
+    let menu = {'vip': '开通VIP', 'manage_diary': '日记管理', 'write_diary': '写日记'};
+    $("#container .content_right .item_nav .nav_ul .nav_li").on('click', function () {
+        let thisMenu = '';
+        for (let menuKey in menu) {
+            if ($(this).hasClass(menuKey)) {
+                let url = ctxPath + 'menu/' + menuKey;
+                thisMenu = menuKey;
+                layOpen(menu[menuKey], url, false);
+                break;
+            }
+        }
+    });
+
+    /**
+     * 加载用户其他信息
+     */
+    function setCurUserInfo() {
+
+    }
 
     /**
      * 加载当前用户Token
@@ -146,7 +170,10 @@
             result = JSONUtil.parseObj(result);
             if (parseInt(result.code) === 200) {
                 TOKEN = result.data;
-                console.log(TOKEN);
+                if (Object.keys(TOKEN).length > 0) {
+                    $(".avatar").attr("alt", TOKEN.username).attr("src", TOKEN.avatar);
+                    $(".username").attr("alt", TOKEN.username);
+                }
             } else {
                 console.log("获取当前登入用户异常哦, 请检查你的参数捏!");
             }
@@ -196,6 +223,22 @@
      */
     function loadHref(href) {
         $("#main_page").attr('src', ctxPath + href);
+    }
+
+    function layOpen(title, url, isCall) {
+        layer.open({
+            type: 2,//类型
+            title: title,//窗口名字
+            shadeClose: false,//点击遮罩不关闭层
+            area: ['1000px', '600px'],//定义宽和高
+            content: url,//打开的内容
+            success: function (layero, index) {
+                if (isCall) {
+                    var iframe = window['layui-layer-iframe' + index];
+                    iframe.child(taskid);
+                }
+            }
+        });
     }
 
 </script>
