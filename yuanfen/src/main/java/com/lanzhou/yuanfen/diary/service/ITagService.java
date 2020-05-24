@@ -3,6 +3,8 @@ package com.lanzhou.yuanfen.diary.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lanzhou.yuanfen.diary.entity.Tag;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,10 @@ import com.lanzhou.yuanfen.diary.entity.Tag;
  */
 public interface ITagService extends IService<Tag> {
 
+    /**
+     * 随机查询
+     * @param labelLimit
+     * @return
+     */
+    List<Tag> randomSelect(Integer labelLimit);
 }

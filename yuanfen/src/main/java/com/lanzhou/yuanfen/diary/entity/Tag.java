@@ -3,12 +3,12 @@ package com.lanzhou.yuanfen.diary.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.lanzhou.yuanfen.config.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,12 +22,12 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("tag")
-public class Tag implements Serializable {
+public class Tag extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "sort_key", type = IdType.AUTO)
-    private Long sortKey;
+    @TableId(value = "tag_key", type = IdType.AUTO)
+    private Long tagKey;
 
     /**
      * 分类名称
@@ -37,15 +37,7 @@ public class Tag implements Serializable {
     /**
      * 描述
      */
-    private String describe;
-
-    private Long createBy;
-
-    private LocalDateTime createTime;
-
-    private Long updateBy;
-
-    private LocalDateTime updateTime;
+    private String description;
 
 
 }

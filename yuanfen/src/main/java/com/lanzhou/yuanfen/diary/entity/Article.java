@@ -1,13 +1,14 @@
 package com.lanzhou.yuanfen.diary.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.lanzhou.yuanfen.config.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -21,7 +22,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("article")
-public class Article implements Serializable {
+public class Article extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,22 +45,8 @@ public class Article implements Serializable {
     private String tags;
 
     /**
-     * 分类Id
-     */
-    private Long sortKey;
-
-    /**
      * 是否公开, 0: 不公开 1: 公开
      */
     private Boolean publicity;
-
-    private Long createBy;
-
-    private LocalDateTime createTime;
-
-    private Long updateBy;
-
-    private LocalDateTime updateTime;
-
 
 }

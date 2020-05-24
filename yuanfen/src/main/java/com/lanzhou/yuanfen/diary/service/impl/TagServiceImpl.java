@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanzhou.yuanfen.diary.service.ITagService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -17,4 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements ITagService {
 
+    @Resource
+    private TagMapper tagMapper;
+
+    @Override
+    public List<Tag> randomSelect(Integer labelLimit) {
+        return tagMapper.randomGetTags(labelLimit);
+    }
 }
