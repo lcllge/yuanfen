@@ -30,7 +30,8 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         try {
-            User user = (User) SecurityContextHolder.getContext().getAuthentication();
+            MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = details.getUser();
             setFieldValByName("createBy", user.getUserKey(), metaObject);
         } catch (Exception e) {
             setFieldValByName("createBy", 0L, metaObject);
@@ -48,7 +49,8 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         try {
-            User user = (User) SecurityContextHolder.getContext().getAuthentication();
+            MyUserDetails details = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = details.getUser();
             if (user != null) {
                 setFieldValByName("updateBy", user.getUserKey(), metaObject);
             }
@@ -60,4 +62,10 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
             setFieldValByName("updateDate", LocalDateTime.now(), metaObject);
         }
     }
+
+
+    private User getUserByToken() {
+        return new User();
+    }
+
 }
