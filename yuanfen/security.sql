@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80013
 File Encoding         : 65001
 
-Date: 2020-05-23 16:14:52
+Date: 2020-05-24 23:13:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,30 +24,31 @@ CREATE TABLE `article` (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内容',
   `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标签',
-  `sort_key` bigint(20) DEFAULT NULL COMMENT '分类Id',
   `publicity` tinyint(1) DEFAULT '0' COMMENT '是否公开, 0: 不公开 1: 公开',
   `create_by` bigint(20) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_by` bigint(20) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`article_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of article
 -- ----------------------------
+INSERT INTO `article` VALUES ('3', '世界那么大,+我想去看看', '是的,+我只想去看看', '6,8,', '0', '0', '2020-05-24 23:03:38', null, null);
+INSERT INTO `article` VALUES ('4', '是是是', '是的反腐', '6,', '0', '0', '2020-05-24 23:08:04', null, null);
 
 -- ----------------------------
--- Table structure for article_sort
+-- Table structure for article_tag
 -- ----------------------------
-DROP TABLE IF EXISTS `article_sort`;
-CREATE TABLE `article_sort` (
+DROP TABLE IF EXISTS `article_tag`;
+CREATE TABLE `article_tag` (
   `article_key` tinyint(20) DEFAULT NULL,
-  `sort_key` tinyint(20) DEFAULT NULL
+  `tag_key` tinyint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
--- Records of article_sort
+-- Records of article_tag
 -- ----------------------------
 
 -- ----------------------------
@@ -216,7 +217,7 @@ CREATE TABLE `permission` (
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`perm_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of permission
@@ -226,6 +227,9 @@ INSERT INTO `permission` VALUES ('2', null, null, null, null, null, 'authenticRe
 INSERT INTO `permission` VALUES ('3', null, null, null, null, null, 'authenticImage', '/images/**');
 INSERT INTO `permission` VALUES ('4', null, null, null, null, null, 'admin', '/index/**');
 INSERT INTO `permission` VALUES ('5', null, null, null, null, null, 'authenticate', '/getToken');
+INSERT INTO `permission` VALUES ('6', null, null, null, null, null, 'menu', '/menu/**');
+INSERT INTO `permission` VALUES ('7', null, null, null, null, null, 'tag', '/tag/**');
+INSERT INTO `permission` VALUES ('8', null, null, null, null, null, 'article', '/article/**');
 
 -- ----------------------------
 -- Table structure for role
@@ -265,6 +269,9 @@ INSERT INTO `role_permission` VALUES ('1', '2');
 INSERT INTO `role_permission` VALUES ('1', '3');
 INSERT INTO `role_permission` VALUES ('1', '4');
 INSERT INTO `role_permission` VALUES ('1', '5');
+INSERT INTO `role_permission` VALUES ('1', '6');
+INSERT INTO `role_permission` VALUES ('1', '7');
+INSERT INTO `role_permission` VALUES ('1', '8');
 
 -- ----------------------------
 -- Table structure for social_login
@@ -290,23 +297,28 @@ CREATE TABLE `social_login` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for sort
+-- Table structure for tag
 -- ----------------------------
-DROP TABLE IF EXISTS `sort`;
-CREATE TABLE `sort` (
-  `sort_key` bigint(20) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `tag`;
+CREATE TABLE `tag` (
+  `tag_key` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '分类名称',
-  `describe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
   `create_by` bigint(20) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_by` bigint(20) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`sort_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`tag_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
--- Records of sort
+-- Records of tag
 -- ----------------------------
+INSERT INTO `tag` VALUES ('4', '7785', null, '0', '2020-05-24 22:55:35', null, null);
+INSERT INTO `tag` VALUES ('5', 'Zoon', null, '0', '2020-05-24 22:13:48', null, null);
+INSERT INTO `tag` VALUES ('6', '世界那么大', null, '0', '2020-05-24 22:46:13', null, null);
+INSERT INTO `tag` VALUES ('7', '哈哈', null, '0', '2020-05-24 22:47:17', null, null);
+INSERT INTO `tag` VALUES ('8', '是是是', null, '0', '2020-05-24 22:49:51', null, null);
 
 -- ----------------------------
 -- Table structure for user
