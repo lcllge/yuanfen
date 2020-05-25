@@ -105,7 +105,7 @@
     <body>
         <div class="container">
             <form id="article" class="form-horizontal" style="margin-top: 15px;">
-                <input type="hidden" name="article_key"/>
+                <input type="hidden" name="articleKey"/>
                 <div class="col-md-12">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">标题：</label>
@@ -186,148 +186,164 @@
     <!--bootstrap.min.js-->
     <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script>
-        $(function () {
-            $(".show-labelitem").on("click", function () {
-                $(this).hide();
-                $(".hide-labelitem").show();
-                $("#labelItem").show();
-            });
-            $(".hide-labelitem").on("click", function () {
-                $(this).hide();
-                $(".show-labelitem").show();
-                $("#labelItem").hide();
-            });
-            $(".add-labelitem").on("click", function () {
-                layer.prompt({title: '添加你的自定义标签，并确认', formType: 2}, function (text, index) {
-                    let url = 'tag/addTag';
-                    AjaxPost(url, {name: text}, function () {
-                    }, function (result) {
-                        if (result.code === 200) {
-                            var labelHTML = "<li data='" + result.data.tagKey + "''>x " + text + "</li>";
-                            if ($(this).hasClass("selected")) {
-                                return false;
-                            } else if ($(".label-selected").children("li").length >= 10) {
-                                layer.msg("最多可以选择10个哦");
-                                return false;
-                            }
-                            $(".label-selected").append(labelHTML);
-                            val = '';
-                            for (var i = 0; i < $(".label-selected").children("li").length; i++) {
-                                val += $(".label-selected").children("li").eq(i).attr("data") + ',';
-                            }
-                            $("input[name='tags']").val(val);
-                            layer.close(index);
-                        } else {
-                            layer.msg(result.message, {icon: 0});
-                        }
-                    });
-                });
-            });
-            /*添加标签*/
-            $(".label-item").on("click", "li", function () {
-                var id = $(this).attr("data");
-                var text = $(this).children("span").html();
-                var labelHTML = "<li data='" + id + "''>x " + text + "</li>";
-                if ($(this).hasClass("selected")) {
-                    return false;
-                } else if ($(".label-selected").children("li").length >= 10) {
-                    layer.msg("最多可以选择10个哦");
-                    return false;
-                }
-                $(".label-selected").append(labelHTML);
-                val = '';
-                for (var i = 0; i < $(".label-selected").children("li").length; i++) {
-                    val += $(".label-selected").children("li").eq(i).attr("data") + ',';
-                }
-                $("input[name='tags']").val(val);
-                $(this).addClass("selected");
-            });
-            var val = "";
-            $(".label-selected").on("click", "li", function () {
-                var id = $(this).attr("data");
-                val = '';
-                $(this).remove();
-                for (var i = 0; i < $(".label-selected").children("li").length; i++) {
-                    val += $(".label-selected").children("li").eq(i).attr("data") + ',';
-                }
-                $("input[name='tags']").val(val);
-                $(".label-item").find("li[data='" + id + "']").removeClass("selected");
-            });
+        var isEdit = false;
 
-
-            //点击更换标签
-            var limit = 0;
-            $(".replacelable").on("click", function () {
-                limit += 32;
-                switchTag(limit);
-            });
-            //获取标签
-            /*$("#cell").on("click", function () {
-                if ($("input[name='tags']").val() == "") {
-                    return false;
-                } else {
-                    layer.msg("标签内容为：" + $("input[name='tags']").val());
-                }
-            });*/
-
-            function switchTag(limit) {
-                layer.load(1);
-                let url = 'tag/switchTags';
-                $.ajax({
-                    url: url,
-                    type: "post",
-                    datatype: "json",
-                    data: {
-                        labelLimit: limit
-                    },
-                    success: function (result) {
-                        if (result.code === 200) {
-                            let data = result.data;
-                            layer.closeAll('loading');
-                            $(".label-item").find("li").remove();//删除原先所有，本来想让数据表随机搜索的，想着有点mmp，就没搞，用的是limit
-                            var html = '';
-                            if (data.length > 0) {
-                                let selected = $("input[name='tags']").val();
-                                if (selected !== "") {
-                                    let has = selected.substr(0, selected.length - 1).split(',');
-                                    for (var i in data) {
-                                        let key = data[i].tagKey + "";
-                                        html += "<li " + (has.indexOf(key) !== -1 ? "class=\"selected\"" : "") + " data=\"" + key + "\">x<span>" + data[i].name + "</span></li>";//拼接标签
-                                    }
-                                } else {
-                                    for (var i in data) {
-                                        let key = data[i].tagKey;
-                                        html += "<li data=\"" + key + "\">x<span>" + data[i].name + "</span></li>";//拼接标签
-                                    }
-                                }
-                            }
-                            $(".label-item").append(html);//追加至文档
-                        }
-                    },
-                    error: function () {
-                        layer.closeAll('loading');
-                        layer.msg("错误~~~");
+        function init(data) {
+            if (Object.keys(data).length > 0) {
+                isEdit = true;
+                $("input[name='articleKey']").val(data.articleKey);
+                $("input[name='title']").val(data.title);
+                $("textarea[name='content']").val(data.content);
+                $("input[name='publicity']").val(data.publicity);
+                let tags = data.tagList;
+                if (tags && tags.length > 0) {
+                    for (let i = 0; i < tags.length; i++) {
+                        let v = tags[i];
+                        addTag(v.tagKey, v.name);
                     }
-                })
+                    switchTag(32, tags);
+                }
+            } else {
+                switchTag(32, null);
             }
+        }
 
-            // 开局调用下
-            switchTag(32);
+        /*选择与取消*/
+        $(".show-labelitem").on("click", function () {
+            $(this).hide();
+            $(".hide-labelitem").show();
+            $("#labelItem").show();
+        });
+        $(".hide-labelitem").on("click", function () {
+            $(this).hide();
+            $(".show-labelitem").show();
+            $("#labelItem").hide();
         });
 
+        /*添加自定义标签*/
+        $(".add-labelitem").on("click", function () {
+            layer.prompt({title: '添加你的自定义标签，并确认', formType: 2}, function (text, index) {
+                let url = 'tag/addTag';
+                AjaxPost(url, {name: text}, function () {
+                }, function (result) {
+                    if (result.code === 200) {
+                        addTag(result.data.tagKey, text);
+                        layer.close(index);
+                    } else {
+                        layer.msg(result.message, {icon: 0});
+                    }
+                });
+            });
+        });
+        /*点击添加标签*/
+        $(".label-item").on("click", "li", function () {
+            let id = $(this).attr("data");
+            let text = $(this).children("span").html();
+            addTag(id, text);
+            $(this).addClass("selected");
+        });
+        let val = "";
+        $(".label-selected").on("click", "li", function () {
+            let id = $(this).attr("data");
+            val = '';
+            $(this).remove();
+            for (let i = 0; i < $(".label-selected").children("li").length; i++) {
+                val += $(".label-selected").children("li").eq(i).attr("data") + ',';
+            }
+            $("input[name='tags']").val(val);
+            $(".label-item").find("li[data='" + id + "']").removeClass("selected");
+        });
+
+        /**
+         * 添加标签实现
+         * @param key 标签ID
+         * @param value 标签值
+         */
+        function addTag(key, value) {
+            let labelHTML = "<li data='" + key + "''>x " + value + "</li>";
+            if ($(this).hasClass("selected")) {
+                return false;
+            } else if ($(".label-selected").children("li").length >= 10) {
+                layer.msg("最多可以选择10个哦");
+                return false;
+            }
+            $(".label-selected").append(labelHTML);
+            val = '';
+            for (let i = 0; i < $(".label-selected").children("li").length; i++) {
+                val += $(".label-selected").children("li").eq(i).attr("data") + ',';
+            }
+            $("input[name='tags']").val(val);
+        }
+
+
+        //点击更换标签
+        let limit = 0;
+        $(".replacelable").on("click", function () {
+            limit += 32;
+            switchTag(limit);
+        });
+
+        /**
+         * 换一换啦
+         * @param limit
+         * @param exist
+         */
+        function switchTag(limit, exist) {
+            layer.load(1);
+            let url = 'tag/switchTags';
+            $.ajax({
+                url: url,
+                type: "post",
+                datatype: "json",
+                data: {
+                    labelLimit: limit
+                },
+                success: function (result) {
+                    if (result.code === 200) {
+                        let data = result.data;
+                        layer.closeAll('loading');
+                        //删除原先所有，本来想让数据表随机搜索的，想着有点mmp，就没搞，用的是limit
+                        $(".label-item").find("li").remove();
+                        let html = '', has = [];
+                        if (data.length > 0) {
+                            let selected = $("input[name='tags']").val();
+                            if (selected !== "") {
+                                has = selected.substr(0, selected.length - 1).split(',');
+                            }
+                            for (let i in data) {
+                                let key = data[i].tagKey + "";
+                                html += "<li " + (has.indexOf(key) !== -1 ? "class=\"selected\"" : "") + " data=\"" + key + "\">x<span>" + data[i].name + "</span></li>";//拼接标签
+                            }
+                        }
+                        $(".label-item").append(html);//追加至文档
+                    }
+                },
+                error: function () {
+                    layer.closeAll('loading');
+                    layer.msg("错误~~~");
+                }
+            })
+        }
+
+        /**
+         * 提交表单
+         */
         function submitFrom() {
-            var data = $('#article').serialize();
+            let data = $('#article').serialize();
             //序列化获得表单数据，结果为：user_id=12&user_name=John&user_age=20
-            let article = decodeURIComponent(data, true);
-            let formData = JSONUtil.parseForm(article);
-            let url = "article/addArticle";
+            let formData = JSONUtil.serializeFormToJson(data);
+            let url = "article/addOrUpdateArticle";
             ajaxPost(url, formData, function () {
                 layer.load(1);
             }, function (result) {
                 if (result.code === 200) {
                     layer.closeAll('loading');
-                    layer.alert('添加成功', function (index) {
-                        //do something
+                    layer.alert('操作成功', function (index) {
+                        if (isEdit) {
+                            // TODO 回调需要将数据放回去
+                            formData['tagList'] = [];
+                            parent.editSuccessCallback(formData);
+                        }
                         layer.close(index);
                         cancel();
                     });
@@ -339,13 +355,13 @@
                 layer.closeAll('loading');
                 layer.msg('服务器好像出了问题, 请稍后重试', {icon: 0});
             });
-
         }
 
         function cancel() {
-            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
             parent.layer.close(index); //再执行关闭
         }
+
 
     </script>
 </html>

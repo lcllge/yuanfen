@@ -1,5 +1,7 @@
 package com.lanzhou.yuanfen.response;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class ServerResponsePage<T> implements Serializable {
 
     private static final long serialVersionUID = 8029494783945793535L;
 
-    private Integer count;
+    private long count;
 
     private Integer code;
 
@@ -28,7 +30,7 @@ public class ServerResponsePage<T> implements Serializable {
         this.code = 0;
     }
 
-    public ServerResponsePage(Integer count, List<T> data) {
+    public ServerResponsePage(long count, List<T> data) {
         this.code = 0;
         this.msg = "success";
         this.count = count;
@@ -43,11 +45,11 @@ public class ServerResponsePage<T> implements Serializable {
         this.msg = msg;
     }
 
-    public Integer getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(long count) {
         this.count = count;
     }
 
@@ -64,12 +66,25 @@ public class ServerResponsePage<T> implements Serializable {
     }
 
     public void setData(List<T> data) {
-        if(data == null || data.size() == 0){
+        if (data == null || data.size() == 0) {
             this.code = 404;
             this.msg = "暂无数据";
-        }else{
+        } else {
             this.count = data.size();
             this.data = data;
         }
     }
+
+    /**
+     * 设置IPage数据
+     *
+     * @param page
+     */
+    public void setIPage(IPage<T> page) {
+        this.code = 200;
+        this.msg = "SUCCESS";
+        this.data = page.getRecords();
+        this.count = page.getTotal();
+    }
+
 }
