@@ -1,4 +1,67 @@
 // 基于layer的Ajax封装的数据层工具类
+
+function applyFor(url, params, sucFun, failFun, errFun) {
+    var index = layer.load();
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: params,
+        success: function (success) {
+            layer.close(index);
+            if (success.code + "" === "200") {
+                if (typeof sucFun === "function") {
+                    sucFun(success.data);
+                }
+            } else {
+                if (typeof failFun === "function") {
+                    failFun(success.data, success.code);
+                } else {
+                    layer.msg(success.data, {icon: 7});
+                }
+            }
+        }, error: function () {
+            layer.close(index);
+            if (typeof errFun === "function") {
+                errFun();
+            } else {
+                layer.msg("系统错误", {icon: 7});
+            }
+        }
+    });
+}
+
+function applySync(url, params, sucFun, failFun, errFun) {
+    let index = layer.load();
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: params,
+        async: false,
+        success: function (success) {
+            layer.close(index);
+            if (success.code + "" === "200") {
+                if (typeof sucFun === "function") {
+                    sucFun(success.data);
+                }
+            } else {
+                if (typeof failFun === "function") {
+                    failFun(success.data);
+                } else {
+                    layer.msg(success.data, {icon: 7});
+                }
+            }
+        }, error: function () {
+            layer.close(index);
+            if (typeof errFun === "function") {
+                errFun();
+            } else {
+                layer.msg("系统错误", {icon: 7});
+            }
+        }
+    });
+}
+
+
 function AjaxPost(Url, JsonData, LodingFun, ReturnFun) {
     $.ajax({
         type: "post",
@@ -20,7 +83,20 @@ function ajaxPost(Url, JsonData, LodingFun, ReturnFun, FailFun) {
         url: Url,
         data: JsonData,
         dataType: 'json',
-        async: 'false',
+        async: true,
+        beforeSend: LodingFun,
+        error: FailFun,
+        success: ReturnFun
+    });
+}
+
+function ajaxSyncPost(Url, JsonData, LodingFun, ReturnFun, FailFun) {
+    $.ajax({
+        type: "post",
+        url: Url,
+        data: JsonData,
+        dataType: 'json',
+        async: false,
         beforeSend: LodingFun,
         error: FailFun,
         success: ReturnFun

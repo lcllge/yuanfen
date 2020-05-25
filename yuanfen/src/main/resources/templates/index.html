@@ -8,6 +8,7 @@
     <script th:src="@{/layer/layer.js}"></script>
     <script th:src="@{/bootstrap/js/AjaxUtil.js}"></script>
     <script th:src="@{/bootstrap/js/JSONUtil.js}"></script>
+    <script th:src="@{/bootstrap/js/layopen.js}"></script>
     <link rel="stylesheet" th:href="@{/bootstrap/css/index-bg.css}" type="text/css"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/index-left.css}" type="text/css"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/index-right.css}" type="text/css"/>
@@ -142,12 +143,11 @@
 
     let menu = {'vip': '开通VIP', 'manage_diary': '日记管理', 'write_diary': '写日记'};
     $("#container .content_right .item_nav .nav_ul .nav_li").on('click', function () {
-        let thisMenu = '';
         for (let menuKey in menu) {
             if ($(this).hasClass(menuKey)) {
                 let url = ctxPath + 'menu/' + menuKey;
-                thisMenu = menuKey;
-                layOpen(menu[menuKey], url, false);
+                let json = {title: menu[menuKey], area: 7, url: url};
+                layopen(json, "init", {});
                 break;
             }
         }
@@ -223,22 +223,6 @@
      */
     function loadHref(href) {
         $("#main_page").attr('src', ctxPath + href);
-    }
-
-    function layOpen(title, url, isCall) {
-        layer.open({
-            type: 2,//类型
-            title: title,//窗口名字
-            shadeClose: false,//点击遮罩不关闭层
-            area: ['1000px', '600px'],//定义宽和高
-            content: url,//打开的内容
-            success: function (layero, index) {
-                if (isCall) {
-                    var iframe = window['layui-layer-iframe' + index];
-                    iframe.child(taskid);
-                }
-            }
-        });
     }
 
 </script>

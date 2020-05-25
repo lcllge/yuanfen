@@ -15,19 +15,16 @@ var JSONUtil = {
             return obj;
         }
     },
-    parseForm: function (text) {
-        let entry = text.split('&'), result = {};
-        for (var i = 0; i < entry.length; i++) {
-            let kv = entry[i];
-            if (kv) {
-                let map = kv.split('=');
-                if (map.length === 2) {
-                    if (map[1]) {
-                        result[map[0]] = map[1];
-                    }
-                }
-            }
-        }
-        return result;
-    }
+
+    /**
+     * JQ serialize之后的数据转换成JSON
+     * @param data
+     * @returns {string}
+     */
+    serializeFormToJson: function (data) {
+        let newData = decodeURIComponent(data);
+        newData = newData.replace(/&/g, "\",\"").replace(/=/g, "\":\"").replace(/\+/g, " ").replace(/[\r\n]/g, "<br>");
+        newData = "{\"" + newData + "\"}";
+        return newData;
+    },
 };
