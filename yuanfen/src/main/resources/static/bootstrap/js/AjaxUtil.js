@@ -14,6 +14,19 @@ function AjaxPost(Url, JsonData, LodingFun, ReturnFun) {
     });
 }
 
+function ajaxPost(Url, JsonData, LodingFun, ReturnFun, FailFun) {
+    $.ajax({
+        type: "post",
+        url: Url,
+        data: JsonData,
+        dataType: 'json',
+        async: 'false',
+        beforeSend: LodingFun,
+        error: FailFun,
+        success: ReturnFun
+    });
+}
+
 
 //Ajax 错误返回处理
 function AjaxError(e) {
@@ -38,7 +51,7 @@ function AjaxError(e) {
 
 //错误提示弹出
 function ErrorAlert(e) {
-    var index = layer.alert(e , {
+    var index = layer.alert(e, {
         icon: 5,
         time: 2000,
         offset: 'auto',
@@ -56,7 +69,7 @@ function ErrorAlert(e) {
 
 //警告弹出
 function WarnAlert(e) {
-    var index = layer.alert(e , {
+    var index = layer.alert(e, {
         icon: 0,
         time: 2000,
         offset: 'auto',
@@ -74,7 +87,7 @@ function WarnAlert(e) {
 
 //错误提示弹出
 function SuccessAlert(e) {
-    var index = layer.alert(e , {
+    var index = layer.alert(e, {
         icon: 1,
         time: 2000,
         offset: 'auto',

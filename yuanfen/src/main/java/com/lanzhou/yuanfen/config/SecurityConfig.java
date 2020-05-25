@@ -84,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/registerUser",
                 "/sendEmail",
                 "/sendSms",
+                "/menu/**",
                 "/bootstrap/**",
                 "/layer/**",
                 "/error/**",

@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author LanZhou
@@ -33,22 +31,19 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new RuntimeException("暂无当前用户!!!");
         }
         if (users.size() > 1) {
-            throw new RuntimeException("系统用户出错, 请联系管理员清楚用户 : " + s + "!!!");
+            throw new RuntimeException("系统用户出错, 请联系管理员清理用户列表 : " + s + "!!!");
         }
         return getUserDetailsByUser(users.get(0));
     }
 
     private UserDetails getUserDetailsByUser(User user) {
-        Set<SimpleGrantedAuthority> grantedAuthoritySet = new HashSet<>();
+        List<SimpleGrantedAuthority> grantedAuthoritySet = new ArrayList<>();
         List<String> perms = rolePermissionMapper.getPermByUserKey(user.getUserKey());
         for (String perm : perms) {
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(perm);
             grantedAuthoritySet.add(authority);
         }
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(grantedAuthoritySet).build();
+        return new MyUserDetails(user, grantedAuthoritySet);
     }
 
 

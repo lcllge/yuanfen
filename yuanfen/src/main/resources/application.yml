@@ -60,6 +60,10 @@ mybatis-plus:
 
 server:
   port: 8080
+  # servlet:
+  #   session:
+  #     # session 过期时间(分)
+  #     timeout: 60
 
 
 logging:

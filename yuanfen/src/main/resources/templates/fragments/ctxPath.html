@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org"
-       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html  xmlns:th="http://www.thymeleaf.org">
 <body>
 <header th:fragment="ctxPath">
     <script type="text/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-        var ctxPath = /*[[@{/}]]*/;
-        /*]]>*/
-        ctxPath = ctxPath=='/'?'':ctxPath;
+        // /*<![CDATA[*/
+        // var ctxPath = /*[[@{/}]]*/;
+        // /*]]>*/
+        // ctxPath = ctxPath=='/'?'':ctxPath;
+        /*var ctxPath  = [[@{/}]];
+        var ctxPath = /!*[[@{/}]]*!/'';*/
+        var ctxPath=[[${#httpServletRequest.getContextPath()}]];
     </script>
 </header>
 </body>
