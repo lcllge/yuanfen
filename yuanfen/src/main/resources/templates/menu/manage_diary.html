@@ -65,8 +65,9 @@
                     html.push('<tr><td>' + data[i].title + '</td>');
                     html.push('<td style="max-width: 520px;">' + createTag(data[i].tagList) + '</td>');
                     html.push('<td>' + data[i].createTime.replace(/T/, ' ') + '</td>');
-                    html.push('<td>' + createToolbar(data[i]) + '</td>');
+                    html.push('<td>' + createToolbar(data[i], i) + '</td>');
                     html.push('</tr>');
+                    data[i]['dataIndex'] = i;
                 }
             }
             html.push('</tbody></table>');
@@ -78,22 +79,37 @@
         /**
          * 工具栏
          */
-        function createToolbar(data) {
+        function createToolbar(data, i) {
             return '<span onclick="editTag(' + data.articleKey + ')" style="padding: 3px 8px;background: #1E9FFF;color: #FFF;cursor:pointer;' +
                 'border-radius: 2px;margin: 5px 5px 5px 0;display: block;float: left;">编辑</span>' +
                 '<span onclick="delTag(' + data.articleKey + ')" style="padding: 3px 8px;background: #FFB800;color: #FFF;cursor:pointer;' +
                 'border-radius: 2px;margin: 5px 5px 5px 0;display: block;float: left;">删除</span>';
         }
 
+        /**
+         * 编辑
+         */
         function editTag(key) {
-            let row = getCellByKey(key);
+            let row = getRowByKey(key);
             if (row !== null) {
                 let json = {title: "编辑日记", area: 10, url: 'menu/write_diary'};
                 layopen(json, "init", row);
             }
         }
 
+        /**
+         * 成功回调
+         */
+        function editSuccessCallback(data) {
+            let row = getRowByKey(data.articleKey);
+            let index = row['dataIndex'];
+            let $tr = $("#mainContent .table tbody tr").eq(index);
+            console.log($tr);
+        }
 
+        /**
+         * 删除
+         */
         function delTag(key) {
 
         }
@@ -175,10 +191,10 @@
          * @param key
          * @returns {*}
          */
-        function getCellByKey(key) {
+        function getRowByKey(key) {
             for (let i = 0; i < CUR_PAGE.length; i++) {
                 let v = CUR_PAGE[i];
-                if (v.articleKey === key) {
+                if ((v.articleKey + '') === (key + '')) {
                     return v;
                 }
             }

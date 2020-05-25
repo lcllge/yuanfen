@@ -186,8 +186,11 @@
     <!--bootstrap.min.js-->
     <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
     <script>
+        var isEdit = false;
+
         function init(data) {
             if (Object.keys(data).length > 0) {
+                isEdit = true;
                 $("input[name='articleKey']").val(data.articleKey);
                 $("input[name='title']").val(data.title);
                 $("textarea[name='content']").val(data.content);
@@ -322,22 +325,6 @@
             })
         }
 
-        $.fn.serializeObject = function () {
-            let ct = this.serializeArray();
-            let obj = {};
-            $.each(ct, function () {
-                if (obj[this.name] !== undefined) {
-                    if (!obj[this.name].push) {
-                        obj[this.name] = [obj[this.name]];
-                    }
-                    obj[this.name].push(this.value || "");
-                } else {
-                    obj[this.name] = this.value || "";
-                }
-            });
-            return obj;
-        };
-
         /**
          * 提交表单
          */
@@ -351,8 +338,12 @@
             }, function (result) {
                 if (result.code === 200) {
                     layer.closeAll('loading');
-                    layer.alert('添加成功', function (index) {
-                        //do something
+                    layer.alert('操作成功', function (index) {
+                        if (isEdit) {
+                            // TODO 回调需要将数据放回去
+                            formData['tagList'] = [];
+                            parent.editSuccessCallback(formData);
+                        }
                         layer.close(index);
                         cancel();
                     });

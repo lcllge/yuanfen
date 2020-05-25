@@ -25,6 +25,6 @@ var JSONUtil = {
         let newData = decodeURIComponent(data);
         newData = newData.replace(/&/g, "\",\"").replace(/=/g, "\":\"").replace(/\+/g, " ").replace(/[\r\n]/g, "<br>");
         newData = "{\"" + newData + "\"}";
-        return newData;
+        return JSON.parse(newData);
     },
 };
