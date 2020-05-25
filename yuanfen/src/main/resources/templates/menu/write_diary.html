@@ -343,17 +343,21 @@
             }, function (result) {
                 if (result.code === 200) {
                     layer.closeAll('loading');
-                    layer.alert('操作成功', function (index) {
+                    if (isEdit) {
+                        formData['tagList'] = getSelectedTag();
+                        parent.editSuccessCallback(formData);
+                    }
+                    layer.msg('操作成功', {icon: 1, time: 800}, function () {
+                        cancel();
+                    });
+                    /*layer.alert('操作成功', function (index) {
                         if (isEdit) {
-                            // TODO 回调需要将数据放回去
-                            // formData['tagList'] = getSelectedTag();
-                            let se = getSelectedTag();
-                            console.log(se);
+                            formData['tagList'] = getSelectedTag();
                             parent.editSuccessCallback(formData);
                         }
                         layer.close(index);
-                        cancel();
-                    });
+
+                    });*/
                 } else {
                     layer.closeAll('loading');
                     layer.msg(result.message, {icon: 0});

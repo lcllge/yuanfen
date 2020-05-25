@@ -50,6 +50,19 @@ public class ArticleController {
 
 
     /**
+     * 删除文章
+     *
+     * @param articleKey
+     * @return
+     */
+    @PostMapping("delArticle")
+    public ServerResponseResult delArticle(@RequestParam("articleKey")String articleKey) {
+        boolean save = articleService.removeById(articleKey);
+        return save ? ServerResponseResult.success() : ServerResponseResult.fail();
+    }
+
+
+    /**
      * 添加文章
      *
      * @param pageSize

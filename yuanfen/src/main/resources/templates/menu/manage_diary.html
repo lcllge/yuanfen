@@ -34,7 +34,7 @@
     </head>
     <body>
         <div id="callBackPagination" class="piece">
-            <div id="mainContent" style="margin: 0 20px"></div>
+            <div id="mainContent" style="margin: 0 20px;overflow-y: auto;"></div>
             <div id="callBackPager" style="margin: 0 20px"></div>
         </div>
     </body>
@@ -43,7 +43,7 @@
     <script th:src="@{/bootstrap/js/AjaxUtil.js}"></script>
     <script type="text/javascript">
         // 初始化参数
-        var CUR_PAGE = [];
+        var CACHE = [];
         let totalCount = 252, showCount = 1, limit = 10;
 
         /**
@@ -58,14 +58,14 @@
         function createTable(data) {
             let html = [];
             html.push(' <table class="table table-hover piece" style="margin-left: 0;">');
-            html.push(' <caption>悬停表格</caption>');
+            // html.push(' <caption style="text-align: center;">您管理的日记</caption>');
             html.push(' <thead><tr><th>标题</th><th>标签</th><th>创建时间</th><th>操作</th></tr></thead><tbody>');
             if (data.length > 0) {
                 for (let i = 0; i < data.length; i++) {
                     html.push('<tr><td>' + data[i].title + '</td>');
                     html.push('<td style="max-width: 520px;">' + createTag(data[i].tagList) + '</td>');
                     html.push('<td>' + data[i].createTime.replace(/T/, ' ') + '</td>');
-                    html.push('<td>' + createToolbar(data[i], i) + '</td>');
+                    html.push('<td>' + createToolbar(data[i]) + '</td>');
                     html.push('</tr>');
                     data[i]['dataIndex'] = i;
                 }
@@ -79,17 +79,17 @@
         /**
          * 工具栏
          */
-        function createToolbar(data, i) {
-            return '<span onclick="editTag(' + data.articleKey + ')" style="padding: 3px 8px;background: #1E9FFF;color: #FFF;cursor:pointer;' +
+        function createToolbar(data) {
+            return '<span onclick="editArticle(' + data.articleKey + ')" style="padding: 3px 8px;background: #1E9FFF;color: #FFF;cursor:pointer;' +
                 'border-radius: 2px;margin: 5px 5px 5px 0;display: block;float: left;">编辑</span>' +
-                '<span onclick="delTag(' + data.articleKey + ')" style="padding: 3px 8px;background: #FFB800;color: #FFF;cursor:pointer;' +
+                '<span onclick="delArticle(' + data.articleKey + ')" style="padding: 3px 8px;background: #FFB800;color: #FFF;cursor:pointer;' +
                 'border-radius: 2px;margin: 5px 5px 5px 0;display: block;float: left;">删除</span>';
         }
 
         /**
          * 编辑
          */
-        function editTag(key) {
+        function editArticle(key) {
             let row = getRowByKey(key);
             if (row !== null) {
                 let json = {title: "编辑日记", area: 10, url: 'menu/write_diary'};
@@ -102,21 +102,42 @@
          */
         function editSuccessCallback(data) {
             let row = getRowByKey(data.articleKey);
-            let index = row['dataIndex'];
-            let $tr = $("#mainContent .table tbody tr").eq(index);
-            console.log($tr);
+            updateRow(row, data);
         }
 
         /**
-         * 删除
+         * 删除文章
          */
-        function delTag(key) {
+        function delArticle(key) {
+            layer.confirm('您是是否需要删除此记录？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                let row = getRowByKey(key);
+                let url = 'article/delArticle';
+                ajaxSyncPost(url, {articleKey: row.articleKey}, function () {
+                    layer.load(1);
+                }, function (result) {
+                    layer.closeAll("loading");
+                    if (result.code === 200) {
+                        let dataIndex = row['dataIndex'];
+                        removeCacheByKey(dataIndex);
+                        $("#mainContent .table tbody tr").eq(dataIndex).remove();
+                        SuccessAlert('删除成功');
+                    } else {
+                        WarnAlert('请求数据失败, 请稍后重试');
+                    }
+                }, function () {
+                    layer.closeAll("loading");
+                    ErrorAlert('后台请求出错, 请稍后重试');
+                });
+            }, function(){
 
+            });
         }
 
 
         /**
-         * 标签
+         * 创建标签Dom
          */
         function createTag(tags) {
             let html = '';
@@ -157,7 +178,11 @@
             });
         }
 
-
+        /**
+         * 初始化加载表格
+         * @param curr
+         * @param limit
+         */
         function loadInitTable(curr, limit) {
             let url = 'article/pageGetArticle';
             ajaxSyncPost(url, {pageIndex: curr, pageSize: limit}, function () {
@@ -166,7 +191,7 @@
                 layer.closeAll("loading");
                 if (result.code === 200) {
                     let data = result.data;
-                    CUR_PAGE = data;
+                    CACHE = data;
                     totalCount = result.count;
                     createTable(data);
                     $('#callBackPager').extendPagination({
@@ -192,13 +217,62 @@
          * @returns {*}
          */
         function getRowByKey(key) {
-            for (let i = 0; i < CUR_PAGE.length; i++) {
-                let v = CUR_PAGE[i];
+            for (let i = 0; i < CACHE.length; i++) {
+                let v = CACHE[i];
                 if ((v.articleKey + '') === (key + '')) {
                     return v;
                 }
             }
             return null;
+        }
+
+        /**
+         * 更新行数据
+         */
+        function updateRow(row, data) {
+            let index = row['dataIndex'];
+            updateRowCache(index, data);
+            updateRowDom(index, data);
+        }
+
+        /**
+         * 更新行Dom
+         */
+        function updateRowDom(dataIndex, data) {
+            let $tr = $("#mainContent .table tbody tr").eq(dataIndex);
+            if ($tr) {
+                $tr.find("td").eq(0).text(data.title);
+                let tags = createTag(data.tagList);
+                $tr.find("td").eq(1).html(tags);
+                $tr.find("td").eq(2).text(data.createTime);
+                let opt = createToolbar(data);
+                $tr.find("td").eq(3).html(opt);
+            }
+        }
+
+        /**
+         * 获取数据在缓存中的索引并替换他
+         * @param dataIndex
+         * @returns {null}
+         */
+        function updateRowCache(dataIndex, data) {
+            data['dataIndex'] = dataIndex;
+            removeCacheByKey(dataIndex);
+            CACHE.push(data);
+        }
+
+        /**
+         * 通过ID删除缓存数据
+         * @param key
+         */
+        function removeCacheByKey(dataIndex) {
+            for (let i = 0; i < CACHE.length; i++) {
+                let v = CACHE[i];
+                if (v.dataIndex === dataIndex) {
+                    CACHE.splice(i, 1);
+                    break;
+                }
+            }
         }
 
     </script>
