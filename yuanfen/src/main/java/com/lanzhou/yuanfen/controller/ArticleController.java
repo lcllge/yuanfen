@@ -2,9 +2,11 @@ package com.lanzhou.yuanfen.controller;
 
 import com.lanzhou.yuanfen.diary.entity.Article;
 import com.lanzhou.yuanfen.diary.service.IArticleService;
+import com.lanzhou.yuanfen.response.ServerResponsePage;
 import com.lanzhou.yuanfen.response.ServerResponseResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -32,6 +34,20 @@ public class ArticleController {
     public ServerResponseResult addArticle(Article article) {
         boolean save = articleService.save(article);
         return save ? ServerResponseResult.success() : ServerResponseResult.fail();
+    }
+
+
+    /**
+     * 添加文章
+     *
+     * @param pageSize
+     * @param pageIndex
+     * @return
+     */
+    @PostMapping("pageGetArticle")
+    public ServerResponsePage pageGetArticle(@RequestParam("pageSize") Integer pageSize,
+                                             @RequestParam("pageIndex") Integer pageIndex) {
+        return new ServerResponsePage();
     }
 
 
