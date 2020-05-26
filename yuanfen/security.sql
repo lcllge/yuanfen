@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80013
 File Encoding         : 65001
 
-Date: 2020-05-24 23:13:42
+Date: 2020-05-26 08:22:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,18 +25,20 @@ CREATE TABLE `article` (
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内容',
   `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标签',
   `publicity` tinyint(1) DEFAULT '0' COMMENT '是否公开, 0: 不公开 1: 公开',
+  `views` bigint(20) DEFAULT '0',
   `create_by` bigint(20) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_by` bigint(20) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`article_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of article
 -- ----------------------------
-INSERT INTO `article` VALUES ('3', '世界那么大,+我想去看看', '是的,+我只想去看看', '6,8,', '0', '0', '2020-05-24 23:03:38', null, null);
-INSERT INTO `article` VALUES ('4', '是是是', '是的反腐', '6,', '0', '0', '2020-05-24 23:08:04', null, null);
+INSERT INTO `article` VALUES ('3', '世界那么大, 我想去看看', '是的, 我只想去看看', '6,8,4,17,11,13,', '0', null, '1', '2020-05-24 23:03:38', '1', '2020-05-25 19:50:18');
+INSERT INTO `article` VALUES ('4', '是是是', '是的反腐', '6,14,5,', '0', null, '1', '2020-05-24 23:08:04', '1', '2020-05-25 22:54:20');
+INSERT INTO `article` VALUES ('11', '我是你的打野', '74854616161', '5,12,13,', '0', null, '1', '2020-05-25 20:08:16', '1', '2020-05-25 21:35:31');
 
 -- ----------------------------
 -- Table structure for article_tag
@@ -309,7 +311,7 @@ CREATE TABLE `tag` (
   `update_by` bigint(20) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`tag_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of tag
@@ -319,6 +321,18 @@ INSERT INTO `tag` VALUES ('5', 'Zoon', null, '0', '2020-05-24 22:13:48', null, n
 INSERT INTO `tag` VALUES ('6', '世界那么大', null, '0', '2020-05-24 22:46:13', null, null);
 INSERT INTO `tag` VALUES ('7', '哈哈', null, '0', '2020-05-24 22:47:17', null, null);
 INSERT INTO `tag` VALUES ('8', '是是是', null, '0', '2020-05-24 22:49:51', null, null);
+INSERT INTO `tag` VALUES ('9', 'uuu', null, '0', '2020-05-24 23:44:17', null, null);
+INSERT INTO `tag` VALUES ('10', '下次', null, '0', '2020-05-24 23:44:53', null, null);
+INSERT INTO `tag` VALUES ('11', '一定', null, '0', '2020-05-24 23:45:58', null, null);
+INSERT INTO `tag` VALUES ('12', '猪猪', null, null, '2020-05-24 23:51:00', null, null);
+INSERT INTO `tag` VALUES ('13', '77855', null, null, '2020-05-24 23:52:41', null, null);
+INSERT INTO `tag` VALUES ('14', '事实上', null, '0', '2020-05-24 23:54:27', null, null);
+INSERT INTO `tag` VALUES ('15', '阿Sa', null, '0', '2020-05-24 23:54:59', null, null);
+INSERT INTO `tag` VALUES ('16', '阿Sa母', null, null, '2020-05-25 00:02:51', null, null);
+INSERT INTO `tag` VALUES ('17', 'sss', null, null, '2020-05-25 00:24:43', null, null);
+INSERT INTO `tag` VALUES ('18', '实施', null, '1', '2020-05-25 00:27:31', null, null);
+INSERT INTO `tag` VALUES ('19', '发送到发送到发大发到付', null, '1', '2020-05-25 00:33:07', null, null);
+INSERT INTO `tag` VALUES ('20', '阿斯顿法师打发斯蒂芬沪电股份获得该发生发打发斯蒂芬', null, '1', '2020-05-25 00:33:13', null, null);
 
 -- ----------------------------
 -- Table structure for user
@@ -327,6 +341,8 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_key` bigint(20) NOT NULL AUTO_INCREMENT,
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `vip` tinyint(1) DEFAULT '0',
+  `level` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '等级(资深舔狗这种...)',
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -349,17 +365,17 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'http://thirdqq.qlogo.cn/g?b=oidb&k=ewCeiar9aaU1SxTaoCvTVjA&s=100&t=1558925595', null, 'hjt6355@163.com', '18779177562', null, null, 'admin', '$2a$10$1skbzsy9GxPU8zDXZkU9u.ul1l7zmoGJlZqzMsh3BQNZuJp7sli96', '男', null, null, null, null, null, null, null, '2019-12-02 12:18:33');
-INSERT INTO `user` VALUES ('2', null, null, '552166451@qq.com', '17306008233', null, null, 'host', '$2a$10$0GYz/mqgqsXGt5gHmKIR3eMvyJaZ17u5erJAvkOSFV4Cnk/R4aTLe', '男', null, null, null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('6', null, null, '601517124@qq.com', null, null, null, 'test', '$2a$10$hIqpdyVHYRTWjcHi1x0KbecWYgwucfTFBuhaOlvRND5bthbhvuZ.O', '男', null, null, null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('7', null, null, 'tong104218@163.com', null, null, null, 'liangtong', '$2a$10$FdOmuZp3r1UgWmuZWdHqIOfav6.G3toBZkrGsFwfxNYL2MQ0eXwSe', '男', null, null, null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('8', null, null, '1627518680@qq.com', null, null, null, 'super', '$2a$10$OUs4FXptpUIVreKhXH7ioOaRqIqPiUmP1OcQqGUcjc0zq2MAaFVPC', '男', null, '941913', null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('9', null, null, '1628356000@qq.com', null, null, null, 'qiuhua', '$2a$10$/WU7K5dwAYkPHxOkwZ1fluP/C6GIeVjPEd3rHuSGjLo6MVW59WqAG', '男', null, '992764', null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('10', null, null, '318144226@qq.com', null, null, null, 'kaihu', '$2a$10$t3Y3fVJjsfITOmOGbaiYDu4v7uSVYcN7WAqSxVsgToodpghe0BsgG', '男', null, '195747', null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('11', null, null, '123456789@qq.com', null, null, null, 'momo', '$2a$10$JSj7QLhYYuP/5lnNGB1aj.mJpNyd0Aj9xomLOLFv6BcuNEh2xbctq', '女', null, null, null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('12', null, null, '123456@qq.com', null, null, null, 'you', '$2a$10$a6kxl/S2nzUd0JoJBnWIGOiVVv6IM/LXH4CAQhFY8ViX2tlKq3bPm', '女', null, null, null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('13', null, null, '1255225@163.com', null, null, null, 'soul', '$2a$10$lh0t0xhNTlrGQjfAiX.58.jBJ/NJAqN52u2dHnM4r.4BCUzG7oRRy', '女', null, null, null, null, null, null, null, null);
-INSERT INTO `user` VALUES ('14', null, null, '318144222@qq.com', null, null, null, 'clearLove', '$2a$10$zlg9jSmvySEzmNZ9o6U5UeXnImpc4aWOhl4IT90fMEJNNuK/M2UXO', '女', null, null, null, null, null, '0', '2020-05-18 15:26:51', null);
+INSERT INTO `user` VALUES ('1', 'http://thirdqq.qlogo.cn/g?b=oidb&k=ewCeiar9aaU1SxTaoCvTVjA&s=100&t=1558925595', '4', null, null, 'hjt6355@163.com', '18779177562', null, null, 'admin', '$2a$10$1skbzsy9GxPU8zDXZkU9u.ul1l7zmoGJlZqzMsh3BQNZuJp7sli96', '男', null, null, null, null, null, null, null, '2019-12-02 12:18:33');
+INSERT INTO `user` VALUES ('2', null, '0', null, null, '552166451@qq.com', '17306008233', null, null, 'host', '$2a$10$0GYz/mqgqsXGt5gHmKIR3eMvyJaZ17u5erJAvkOSFV4Cnk/R4aTLe', '男', null, null, null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('6', null, '0', null, null, '601517124@qq.com', null, null, null, 'test', '$2a$10$hIqpdyVHYRTWjcHi1x0KbecWYgwucfTFBuhaOlvRND5bthbhvuZ.O', '男', null, null, null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('7', null, '0', null, null, 'tong104218@163.com', null, null, null, 'liangtong', '$2a$10$FdOmuZp3r1UgWmuZWdHqIOfav6.G3toBZkrGsFwfxNYL2MQ0eXwSe', '男', null, null, null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('8', null, '0', null, null, '1627518680@qq.com', null, null, null, 'super', '$2a$10$OUs4FXptpUIVreKhXH7ioOaRqIqPiUmP1OcQqGUcjc0zq2MAaFVPC', '男', null, '941913', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('9', null, '0', null, null, '1628356000@qq.com', null, null, null, 'qiuhua', '$2a$10$/WU7K5dwAYkPHxOkwZ1fluP/C6GIeVjPEd3rHuSGjLo6MVW59WqAG', '男', null, '992764', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('10', null, '0', null, null, '318144226@qq.com', null, null, null, 'kaihu', '$2a$10$t3Y3fVJjsfITOmOGbaiYDu4v7uSVYcN7WAqSxVsgToodpghe0BsgG', '男', null, '195747', null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('11', null, '0', null, null, '123456789@qq.com', null, null, null, 'momo', '$2a$10$JSj7QLhYYuP/5lnNGB1aj.mJpNyd0Aj9xomLOLFv6BcuNEh2xbctq', '女', null, null, null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('12', null, '0', null, null, '123456@qq.com', null, null, null, 'you', '$2a$10$a6kxl/S2nzUd0JoJBnWIGOiVVv6IM/LXH4CAQhFY8ViX2tlKq3bPm', '女', null, null, null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('13', null, '0', null, null, '1255225@163.com', null, null, null, 'soul', '$2a$10$lh0t0xhNTlrGQjfAiX.58.jBJ/NJAqN52u2dHnM4r.4BCUzG7oRRy', '女', null, null, null, null, null, null, null, null);
+INSERT INTO `user` VALUES ('14', null, '0', null, null, '318144222@qq.com', null, null, null, 'clearLove', '$2a$10$zlg9jSmvySEzmNZ9o6U5UeXnImpc4aWOhl4IT90fMEJNNuK/M2UXO', '女', null, null, null, null, null, '0', '2020-05-18 15:26:51', null);
 
 -- ----------------------------
 -- Table structure for user_role
