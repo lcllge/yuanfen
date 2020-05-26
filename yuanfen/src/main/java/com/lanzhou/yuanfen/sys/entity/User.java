@@ -34,6 +34,18 @@ public class User extends BaseEntity implements Serializable {
 
     private String code;
 
+    /**
+     * 是否是vip: 给不同的头像框特效
+     */
+    private Integer vip;
+
+    /**
+     * 等级:
+     * 配置等级的分层:
+     * 白纸少年,初出茅庐,资深舔狗,骂街泼妇,文坛瑰宝,一代宗师
+     */
+    private String level;
+
     private String smsCode;
 
     private String emlCode;

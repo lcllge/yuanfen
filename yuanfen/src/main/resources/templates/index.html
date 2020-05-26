@@ -13,7 +13,62 @@
     <link rel="stylesheet" th:href="@{/bootstrap/css/index-left.css}" type="text/css"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/index-right.css}" type="text/css"/>
     <link rel="stylesheet" th:href="@{/bootstrap/font-awesome/css/font-awesome.min.css}" type="text/css"/>
-    <link rel="stylesheet" th:href="@{/bootstrap/css/index/iconfont.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/index/iconfont/menu/iconfont.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/index/iconfont/vip/iconfont.css}" type="text/css"/>
+    <style>
+        #container .content_left .personal_friendship .item_personal .per_username .username.vip1 {
+            background: linear-gradient(to left, red, blue);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        #container .content_left .personal_friendship .item_personal .per_username .username.vip2 {
+            background: linear-gradient(to left, blue, red);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        #container .content_left .personal_friendship .item_personal .per_username .username.vip3 {
+            color: red;
+            -webkit-animation: vip4-animate 2s infinite; /* Chrome, Safari, Opera */
+            animation: vip3-animate 2s infinite;
+        }
+
+        /* Chrome, Safari, Opera */
+        @-webkit-keyframes vip3-animate {
+            50% {
+                color: blue;
+            }
+        }
+
+        /* Standard syntax */
+        @keyframes vip3-animate {
+            50% {
+                color: blue;
+            }
+        }
+
+
+        #container .content_left .personal_friendship .item_personal .per_username .username.vip4 {
+            color: yellow;
+            -webkit-animation: vip4-animate 2s infinite; /* Chrome, Safari, Opera */
+            animation: vip4-animate 2s infinite;
+        }
+
+        /* Chrome, Safari, Opera */
+        @-webkit-keyframes vip4-animate {
+            50% {
+                color: red;
+            }
+        }
+
+        /* Standard syntax */
+        @keyframes vip4-animate {
+            50% {
+                color: red;
+            }
+        }
+    </style>
 </head>
 <body>
 <div id="container">
@@ -172,7 +227,26 @@
                 TOKEN = result.data;
                 if (Object.keys(TOKEN).length > 0) {
                     $(".avatar").attr("alt", TOKEN.username).attr("src", TOKEN.avatar);
-                    $(".username").attr("alt", TOKEN.username);
+                    if (parseInt(TOKEN.vip) !== 0) {
+                        let vipHtml = '';
+                        switch (TOKEN.vip + '') {
+                            case '1':
+                                vipHtml = '<span class="iconfont" style="margin-right: 5px;">&#xe7a3;</span>';
+                                break;
+                            case '2':
+                                vipHtml = '<span class="iconfont" style="margin-right: 5px;">&#xe7a5;</span>';
+                                break;
+                            case '3':
+                                vipHtml = '<span class="iconfont" style="margin-right: 5px;">&#xe7ad;</span>';
+                                break;
+                            case '4':
+                                vipHtml = '<span class="iconfont" style="margin-right: 5px;">&#xe7a7;</span>';
+                                break;
+                        }
+                        $(".username").html((vipHtml + TOKEN.username));
+                    }
+                    // TODO 把会员icon斜着放到头像外层去
+                    $(".username").attr("alt", TOKEN.username).addClass(('vip' + TOKEN.vip));
                 }
             } else {
                 console.log("获取当前登入用户异常哦, 请检查你的参数捏!");

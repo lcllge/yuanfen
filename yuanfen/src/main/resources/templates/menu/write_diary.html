@@ -350,14 +350,6 @@
                     layer.msg('操作成功', {icon: 1, time: 800}, function () {
                         cancel();
                     });
-                    /*layer.alert('操作成功', function (index) {
-                        if (isEdit) {
-                            formData['tagList'] = getSelectedTag();
-                            parent.editSuccessCallback(formData);
-                        }
-                        layer.close(index);
-
-                    });*/
                 } else {
                     layer.closeAll('loading');
                     layer.msg(result.message, {icon: 0});

@@ -47,6 +47,11 @@ public class Article extends BaseEntity implements Serializable {
     private String tags;
 
     /**
+     * 查看次数
+     */
+    private Integer views;
+
+    /**
      * 是否公开, 0: 不公开 1: 公开
      */
     private Boolean publicity;

@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>我的空间</title>
+    <base th:href="@{/}">
     <script type="text/javascript" th:src="@{/bootstrap/js/jquery.js}"></script>
     <link rel="stylesheet" th:href="@{/bootstrap/font-awesome/css/font-awesome.min.css}" type="text/css"/>
-    <link rel="stylesheet" th:href="@{/bootstrap/css/index/iconfont.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/index/iconfont/menu/iconfont.css}" type="text/css"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/index/content.css}" type="text/css"/>
     <style>
 
@@ -144,5 +145,83 @@
         </div>
     </div>
 </div>
+<script th:src="@{/bootstrap/js/jquery.js}"></script>
+<script th:src="@{/bootstrap/js/JSONUtil.js}"></script>
+<script th:src="@{/layer/layer.js}"></script>
+<script th:src="@{/bootstrap/js/layopen.js}"></script>
+<script th:src="@{/bootstrap/js/AjaxUtil.js}"></script>
+<script>
+    $(function () {
+        // 初始化页面
+        // init();
+    });
+
+    function init() {
+        ajaxPost('article/getDisableArticle', {}, function () {
+            layer.load(1);
+        }, function (result) {
+            if (result.code === 200) {
+                layer.closeAll('loading');
+                let data = result.data, html = '';
+                if (data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        let v = data[i];
+                        html += getDiaryDom(v);
+                    }
+                }
+                $('#container').empty().html(html);
+            } else {
+                layer.closeAll('loading');
+                layer.msg(result.message, {icon: 0});
+            }
+        }, function () {
+            layer.closeAll('loading');
+            layer.msg('服务器好像出了问题, 请稍后重试', {icon: 0});
+        });
+    }
+
+
+    /**
+     * 获取一个数据日记的HTML代码
+     */
+    function getDiaryDom(data) {
+        return '<div class="diary" data-id="' + data.articleKey + '">' +
+            '<div class="diary_item item_title">' +
+            '<span class="title" href="javascript:void(0);">' + data.title + '</span>' +
+            '</div>' +
+            '<div class="diary_item item_date_view">' +
+            '<span class="date_view">' +
+            '<i class="fa fa-calendar-o"></i>' +
+            '<span class="view_title">发表于:</span>' +
+            '<span class="c_date">' + data.createTime.split('T')[0] + '</span>' +
+            '</span>' +
+            '<span class="date_view">' +
+            '<i class="fa fa-calendar-check-o"></i>' +
+            '<span class="view_title">更新于:</span>' +
+            '<span class="u_date">' + data.updateTime.split('T')[0] + '</span>' +
+            '</span>' +
+            '<span class="date_view">' +
+            '<i class="fa fa-eye"></i>' +
+            '<span class="view_title">阅读次数:</span>' +
+            '<span class="v_count">' + (data.views ? data.views : 0) + '</span>' +
+            '</span>' +
+            '</div>' +
+            '<div class="diary_item item_more_btn">' +
+            '<span class="show_more" onclick="showMore(this)">查看更多 »</span>' +
+            '</div>' +
+            '</div>';
+    }
+
+    /**
+     * 查看更多
+     * @param othis
+     */
+    function showMore(othis) {
+        let articleKey = $(othis).parent().parent().attr('data-id');
+
+    }
+
+
+</script>
 </body>
 </html>

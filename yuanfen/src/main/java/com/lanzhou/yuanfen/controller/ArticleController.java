@@ -3,12 +3,14 @@ package com.lanzhou.yuanfen.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lanzhou.yuanfen.config.MyUserDetails;
 import com.lanzhou.yuanfen.diary.entity.Article;
 import com.lanzhou.yuanfen.diary.entity.Tag;
 import com.lanzhou.yuanfen.diary.service.IArticleService;
 import com.lanzhou.yuanfen.diary.service.ITagService;
 import com.lanzhou.yuanfen.response.ServerResponsePage;
 import com.lanzhou.yuanfen.response.ServerResponseResult;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,23 @@ public class ArticleController {
     private ITagService tagService;
 
     /**
+     * 获取公开的文章展示文章
+     *
+     * @return
+     */
+    @PostMapping("getDisableArticle")
+    public ServerResponseResult getDisableArticle() {
+        MyUserDetails authentication = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userKey = authentication.getUser().getUserKey();
+        List<Article> articleList = articleService.list(new QueryWrapper<Article>().eq("publicity", true).or(qw -> {
+            qw.eq("create_by", userKey);
+        }).orderByDesc("update_time", "create_time"));
+        setPrivateOrPublic(articleList, userKey);
+        return ServerResponseResult.success(articleList);
+    }
+
+
+    /**
      * 添加文章/修改文章
      *
      * @param article
@@ -56,7 +75,7 @@ public class ArticleController {
      * @return
      */
     @PostMapping("delArticle")
-    public ServerResponseResult delArticle(@RequestParam("articleKey")String articleKey) {
+    public ServerResponseResult delArticle(@RequestParam("articleKey") String articleKey) {
         boolean save = articleService.removeById(articleKey);
         return save ? ServerResponseResult.success() : ServerResponseResult.fail();
     }
@@ -93,6 +112,22 @@ public class ArticleController {
                 ArrayList<String> tagId = new ArrayList<>(Arrays.asList(tag.split(",")));
                 List<Tag> tagList = tagService.list(new QueryWrapper<Tag>().in("tag_key", tagId));
                 record.setTagList(tagList);
+            }
+        }
+    }
+
+
+    /**
+     * 设置公开的还是私有的
+     *
+     * @param records
+     */
+    private void setPrivateOrPublic(List<Article> records, Long userKey) {
+        for (Article record : records) {
+            if (record.getCreateBy() != null) {
+                record.setPublicity(userKey.longValue() == record.getCreateBy().longValue());
+            } else {
+                record.setPublicity(true);
             }
         }
     }
